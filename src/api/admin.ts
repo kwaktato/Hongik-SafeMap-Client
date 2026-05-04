@@ -145,7 +145,7 @@ export const useAdminAccounts = () => {
   return useQuery<AdminAccountsResponse[]>({
     queryKey: ['admin', 'accounts'],
     queryFn: async () => {
-      const response = await axiosInstance.get('/admin/account');
+      const response = await axiosInstance.get('/admin/accounts');
       return response.data;
     },
   });
