@@ -53,6 +53,7 @@ const Overlay = styled.div`
   color: ${({ theme }) => theme.colors.white};
   font-size: ${({ theme }) => theme.font.fontSize.detail12};
   font-weight: ${({ theme }) => theme.font.fontWeight.medium};
+  text-align: center;
 
   span {
     font-weight: ${({ theme }) => theme.font.fontWeight.bold};

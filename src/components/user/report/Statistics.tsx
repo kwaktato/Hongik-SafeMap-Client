@@ -42,6 +42,7 @@ const StatisticsWrapper = styled.div`
     flex: 1;
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 2px;
   }
 
@@ -52,6 +53,7 @@ const StatisticsWrapper = styled.div`
 
   .divider {
     width: 1px;
+    height: 30px;
     background: ${({ theme }) => theme.colors.gray400};
   }
 

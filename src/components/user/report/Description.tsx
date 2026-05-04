@@ -120,6 +120,7 @@ const TagWrapper = styled.div`
 
   .divider {
     width: 1px;
+    height: 16px;
     background: ${({ theme }) => theme.colors.gray500};
   }
 `;

@@ -94,7 +94,7 @@ const RatingWrapper = styled.div`
   padding: 16px 20px;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 20px;
 `;
 
 const RatingSection = styled.div`
@@ -120,4 +120,5 @@ const ReportSection = styled.div`
   color: ${({ theme }) => theme.colors.gray700};
   font-size: ${({ theme }) => theme.font.fontSize.body14};
   font-weight: ${({ theme }) => theme.font.fontWeight.medium};
+  text-align: center;
 `;
