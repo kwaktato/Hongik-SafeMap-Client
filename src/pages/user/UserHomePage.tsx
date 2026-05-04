@@ -247,7 +247,7 @@ export const UserHomePage = () => {
                   }}
                   title={String(group.id)}
                   image={{
-                    src: shouldHideIcon ? '' : 'group.disasterType.iconUrl',
+                    src: shouldHideIcon ? '' : group.disasterType.iconUrl,
                     size: shouldHideIcon
                       ? { width: 0, height: 0 }
                       : { width: 36, height: 36 },

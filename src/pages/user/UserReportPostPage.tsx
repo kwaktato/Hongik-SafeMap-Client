@@ -15,9 +15,10 @@ import { useHandleNavigate } from '@/hooks/useHandleNavigate';
 import { useCurrentLocation } from '@/hooks/useCurrentLocation';
 import type { MediaItem, RiskLevel } from '@/types/common';
 import type { ReportRequest } from '@/types/Report';
+import { useImgUpload } from '@/hooks/useImgUpload';
 
 export const UserReportPostPage = () => {
-  const { handleGoBack } = useHandleNavigate();
+  const { handleGoBack, handleNavigate } = useHandleNavigate();
 
   const { data: disasters } = useDisasterType();
   const disasterOptions = useMemo(() => {
@@ -59,8 +60,10 @@ export const UserReportPostPage = () => {
   };
 
   const { mutate: createReport } = useCreateReportMutation();
-  const handleButtonClick = () => {
-    const fileUrls = uploadedFiles.map((media) => media.previewUrl);
+  const { uploadMultipleImages } = useImgUpload();
+  const handleButtonClick = async () => {
+    const files = uploadedFiles.map((f) => f.file);
+    const fileUrls = await uploadMultipleImages(files);
 
     const reportRequest: ReportRequest = {
       disasterTypeId: Number(disasterTypeId),
@@ -75,7 +78,10 @@ export const UserReportPostPage = () => {
     // console.log(reportRequest);
 
     createReport(reportRequest, {
-      onSuccess: () => showToast('제보가 완료되었습니다.'),
+      onSuccess: () => {
+        showToast('제보가 완료되었습니다.');
+        handleNavigate('/user');
+      },
       onError: () => {
         alert('제보를 등록하지 못했습니다.');
       },

@@ -47,8 +47,7 @@ export const UserReportDetailPage = () => {
         <div className="border" />
 
         <SectionWrapper>
-          <div className="title">신뢰도 점수</div>
-          <Trust trustScore={report?.trustScore} />
+          <Trust trustScore={report?.trustScore ?? 0} />
         </SectionWrapper>
       </ReportWrapper>
 
@@ -61,7 +60,7 @@ export const UserReportDetailPage = () => {
 
 const Container = styled.div`
   // margin: 56px 20px 0px 20px;
-  margin-top: 56px;
+  margin-top: 64px;
 
   .title {
     color: ${({ theme }) => theme.colors.gray1000};
@@ -83,9 +82,10 @@ const ReportWrapper = styled.div`
 `;
 
 const ImageWrapper = styled.div`
+  width: 100%;
   display: flex;
-  gap: 8px;
   align-items: center;
+  gap: 8px;
   overflow-x: scroll;
 
   -ms-overflow-style: none;
@@ -93,12 +93,22 @@ const ImageWrapper = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
+
+  @media (min-width: 1024px) {
+    width: 640px;
+  }
 `;
 
 const SectionWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 6px;
+
+  .gray {
+    color: ${({ theme }) => theme.colors.gray700};
+    font-size: ${({ theme }) => theme.font.fontSize.detail12};
+    font-weight: ${({ theme }) => theme.font.fontWeight.medium};
+  }
 `;
 
 const Border = styled.div`
