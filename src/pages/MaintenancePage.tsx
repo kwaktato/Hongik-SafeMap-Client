@@ -1,31 +1,23 @@
 import { styled } from 'styled-components';
 import Warning from '@/assets/icons/WarningError.svg?react';
 import { Button } from '@/components/common/Button';
+import { useHandleNavigate } from '@/hooks/useHandleNavigate';
 
-export const ErrorPage = () => {
-  const handleGoBackAndReload = () => {
-    window.history.back();
-
-    const onPopState = () => {
-      window.location.reload();
-      window.removeEventListener('popstate', onPopState);
-    };
-
-    window.addEventListener('popstate', onPopState);
-  };
+export const MaintenancePage = () => {
+  const { handleNavigate } = useHandleNavigate();
 
   return (
     <Container>
       <Warning />
-      <div className="title">페이지를 찾을 수 없습니다</div>
+      <div className="title">서비스 점검 안내</div>
       <div className="detail">
-        존재하지 않는 주소를 입력하셨거나,
+        더 안정적인 서비스를 위해 현재 시스템 점검을 진행하고 있습니다.
         <br />
-        요청하신 페이지의 주소가 변경되어 찾을 수 없습니다.
+        이용에 불편을 드려 죄송합니다. 잠시 후 다시 시도해 주세요.
       </div>
 
       <Bottom>
-        <Button variant="black" onClick={handleGoBackAndReload}>
+        <Button variant="black" onClick={() => handleNavigate('/')}>
           이전 화면으로
         </Button>
       </Bottom>
