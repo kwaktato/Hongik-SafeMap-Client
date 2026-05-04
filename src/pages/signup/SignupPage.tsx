@@ -1,14 +1,15 @@
 import styled from 'styled-components';
-import ArrowLeft from '@/assets/icons/ArrowLeft.svg?react';
+import { useEffect, useState } from 'react';
+import Back from '@/assets/icons/ChevronLeft.svg?react';
+import Warning from '@/assets/icons/WarningXS.svg?react';
+import { useSignupMutation } from '@/api/auth';
 import { Button } from '@/components/common/Button';
 import { NavBar } from '@/components/common/NavBar';
 import { InputBox } from '@/components/common/InputBox';
 import { useHandleNavigate } from '@/hooks/useHandleNavigate';
-import { useSignupMutation } from '@/api/auth';
 import type { SignupRequest } from '@/types/Auth';
-import { useEffect, useState } from 'react';
 
-const SignupPage = () => {
+export const SignupPage = () => {
   const { handleGoBack, handleNavigate } = useHandleNavigate();
 
   const [name, setName] = useState('');
@@ -109,7 +110,7 @@ const SignupPage = () => {
     setErrors((prev) => ({ ...prev, [fieldName]: errorMessage }));
   };
 
-  const { mutate: signupMutation } = useSignupMutation();
+  const { mutate: signup } = useSignupMutation();
 
   const handleSignupButtonClick = () => {
     const signupRequset: SignupRequest = {
@@ -120,7 +121,7 @@ const SignupPage = () => {
       phone: phone,
     };
     console.log(signupRequset);
-    signupMutation(signupRequset, {
+    signup(signupRequset, {
       onSuccess: () => {
         setEmail('');
         setName('');
@@ -136,7 +137,7 @@ const SignupPage = () => {
     <Container>
       <NavBar
         left={<NavLeft onClick={handleGoBack} />}
-        center={<NavCenter>회원가입</NavCenter>}
+        center={<div>회원가입</div>}
       />
 
       <Wrapper>
@@ -144,53 +145,65 @@ const SignupPage = () => {
           <InputBox
             title="이메일"
             placeholder="아이디로 사용할 이메일을 입력하세요"
-            style={{ height: '40px' }}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             onBlur={() => handleBlur('email')}
           />
-          {errors.name !== '' && <ErrorMessage>{errors.email}</ErrorMessage>}
+          {errors.name !== '' && (
+            <ErrorMessage>
+              <Warning />
+              {errors.email}
+            </ErrorMessage>
+          )}
         </Section>
 
         <Section>
           <InputBox
             title="이름"
             placeholder="이름을 입력하세요"
-            style={{ height: '40px' }}
             value={name}
             onChange={(e) => setName(e.target.value)}
             onBlur={() => handleBlur('name')}
           />
-          {errors.email !== '' && <ErrorMessage>{errors.name}</ErrorMessage>}
+          {errors.email !== '' && (
+            <ErrorMessage>
+              <Warning />
+              {errors.name}
+            </ErrorMessage>
+          )}
         </Section>
 
         <Section>
           <InputBox
             title="비밀번호"
             placeholder="비밀번호를 입력하세요"
-            style={{ height: '40px' }}
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             onBlur={() => handleBlur('password')}
           />
           {errors.password !== '' && (
-            <ErrorMessage>{errors.password}</ErrorMessage>
+            <ErrorMessage>
+              <Warning />
+              {errors.password}
+            </ErrorMessage>
           )}
         </Section>
 
         <Section>
           <InputBox
             title="비밀번호 확인"
-            placeholder="비밀번호 확인을 입력하세요"
-            style={{ height: '40px' }}
+            placeholder="비밀번호 다시 한 번 입력하세요"
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             onBlur={() => handleBlur('confirmPassword')}
           />
           {errors.confirmPassword !== '' && (
-            <ErrorMessage>{errors.confirmPassword}</ErrorMessage>
+            <ErrorMessage>
+              <Warning />
+              {errors.confirmPassword}
+            </ErrorMessage>
           )}
         </Section>
 
@@ -198,64 +211,67 @@ const SignupPage = () => {
           <InputBox
             title="전화번호"
             placeholder="01012345678"
-            style={{ height: '40px' }}
             value={phone}
             max={11}
             onChange={(e) => setPhone(e.target.value)}
             onBlur={() => handleBlur('phone')}
           />
-          {errors.phone !== '' && <ErrorMessage>{errors.phone}</ErrorMessage>}
+          {errors.phone !== '' && (
+            <ErrorMessage>
+              <Warning />
+              {errors.phone}
+            </ErrorMessage>
+          )}
         </Section>
+      </Wrapper>
 
-        <Button
-          height="40px"
-          style={{ height: '40px' }}
-          variant="black"
-          onClick={handleSignupButtonClick}
-        >
+      <Bottom>
+        <Button variant="red" onClick={handleSignupButtonClick}>
           회원가입
         </Button>
-      </Wrapper>
+      </Bottom>
     </Container>
   );
 };
 
-export default SignupPage;
-
 const Container = styled.div`
-  padding: 0px 20px;
-  padding-bottom: 80px;
-  // min-height: 100vh;
+  margin: 56px 20px 100px 20px;
   display: flex;
   flex-direction: column;
 `;
 
-const NavLeft = styled(ArrowLeft)`
+const NavLeft = styled(Back)`
   cursor: pointer;
 `;
 
-const NavCenter = styled.label`
-  color: ${({ theme }) => theme.colors.black};
-  font-size: ${({ theme }) => theme.font.fontSize.text18};
-  font-weight: ${({ theme }) => theme.font.fontWeight.bold};
-`;
-
 const Wrapper = styled.div`
-  flex-grow: 1;
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 32px;
   justify-content: center;
 `;
 
 const Section = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 2px;
 `;
 
 const ErrorMessage = styled.div`
-  color: ${({ theme }) => theme.colors.mainRed};
-  font-size: ${({ theme }) => theme.font.fontSize.text12};
+  display: flex;
+  gap: 2px;
+
+  color: ${({ theme }) => theme.colors.red600};
+  font-size: ${({ theme }) => theme.font.fontSize.detail12};
   font-weight: ${({ theme }) => theme.font.fontWeight.medium};
+`;
+
+const Bottom = styled.div`
+  padding: 20px;
+  background: ${({ theme }) => theme.colors.white};
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
 `;

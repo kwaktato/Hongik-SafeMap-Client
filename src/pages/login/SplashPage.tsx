@@ -2,7 +2,7 @@ import styled, { keyframes } from 'styled-components';
 import { useEffect } from 'react';
 import { useHandleNavigate } from '@/hooks/useHandleNavigate';
 
-const SplashPage = () => {
+export const SplashPage = () => {
   const { handleNavigate } = useHandleNavigate();
 
   useEffect(() => {
@@ -20,8 +20,6 @@ const SplashPage = () => {
     </Container>
   );
 };
-
-export default SplashPage;
 
 const fadeOut = keyframes`
   0% {
@@ -44,13 +42,13 @@ const Container = styled.div`
 
   .title {
     color: ${({ theme }) => theme.colors.gray900};
-    font-size: ${({ theme }) => theme.font.fontSize.text24};
-    font-weight: ${({ theme }) => theme.font.fontWeight.semibold};
+    font-size: ${({ theme }) => theme.font.fontSize.title24};
+    font-weight: ${({ theme }) => theme.font.fontWeight.bold};
   }
 
   .detail {
     color: ${({ theme }) => theme.colors.gray500};
-    font-size: ${({ theme }) => theme.font.fontSize.text16};
+    font-size: ${({ theme }) => theme.font.fontSize.body16};
     font-weight: ${({ theme }) => theme.font.fontWeight.medium};
   }
 `;
