@@ -1,20 +1,21 @@
-export interface Sort {
-  empty: boolean;
-  unsorted: boolean;
-  sorted: boolean;
-}
-
-export interface Pageable {
-  offset: number;
-  sort: Sort;
-  paged: boolean;
-  pageNumber: number;
-  pageSize: number;
-  unpaged: boolean;
-}
-
 export interface PageableRequest {
-  page: number;
-  size: number;
-  sort?: string[];
+  page?: number;
+  size?: number;
+}
+
+export interface BasePageResponse {
+  currentPage: number;
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
+  first: boolean;
+  last: boolean;
+}
+
+export interface ReportPageResponse<T> extends BasePageResponse {
+  reports: T[];
+}
+
+export interface LogPageResponse<T> extends BasePageResponse {
+  logs: T[];
 }

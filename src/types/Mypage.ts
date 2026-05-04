@@ -1,30 +1,11 @@
-export interface SensitiveInfoResponse {
-  sensitiveInfoId: number;
-  bloodType: string;
-  allergies: string;
-  chronicDiseases: string;
-  medications: string;
-}
+import type { ReportPageResponse } from '@/types/Pageable';
+import type { ReportBase } from '@/types/Report';
+import type { MissingPost, ResourcePost } from '@/types/Post';
 
-export interface SensitiveInfoRequest {
-  bloodType: string;
-  allergies: string;
-  chronicDiseases: string;
-  medications: string;
-}
-
-export interface EmergencyContact {
-  emergencyContactId: number;
+export interface AccountResponse {
   name: string;
-  relationship: string;
-  phone: string;
-}
-
-export type EmergencyContactsResponse = EmergencyContact[];
-
-export interface EmergencyContactsRequest {
-  name: string;
-  relationship: string;
+  email: string;
+  status: string;
   phone: string;
 }
 
@@ -33,8 +14,39 @@ export interface PasswordRequest {
   newPassword: string;
 }
 
-export interface MyResponse {
-  name: string;
-  email: string;
-  status: string;
+export interface MedicalInfoResponse {
+  sensitiveInfoId: number;
+  bloodType: string;
+  allergies: string;
+  chronicDiseases: string;
+  medications: string;
 }
+
+export interface MedicalInfoRequest {
+  bloodType: string;
+  allergies: string;
+  chronicDiseases: string;
+  medications: string;
+}
+
+export interface EmergencyContactResponse {
+  emergencyContactId: number;
+  name: string;
+  relationship: string;
+  phone: string;
+}
+
+export interface EmergencyContactsRequest {
+  name: string;
+  relationship: string;
+  phone: string;
+}
+
+/* [get] /members/me/reports */
+export type MyReportListResponse = ReportPageResponse<ReportBase>;
+
+/* [get] /members/me/resource-reports */
+export type MyResourceReportListResponse = ReportPageResponse<ResourcePost>;
+
+/* [get] /members/me/lost-reports */
+export type MyMissingReportListResponse = ReportPageResponse<MissingPost>;

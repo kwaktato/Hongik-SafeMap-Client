@@ -1,6 +1,6 @@
 export type LoginType = '일반' | '카카오' | '구글';
 
-export type MemberStatus = '일반' | '관리자';
+export type MemberStatus = 'USER' | 'ADMIN';
 
 export interface SignupRequest {
   name: string;

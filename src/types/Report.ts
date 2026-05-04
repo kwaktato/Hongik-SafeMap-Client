@@ -1,92 +1,81 @@
-import type { Pageable, Sort } from '@/types/Pageable';
+import type {
+  DisasterReportStatus,
+  DisasterType,
+  RiskLevel,
+} from '@/types/common';
 
-export type DisasterReportStatus =
-  | '검토대기'
-  | '승인'
-  | '블라인드'
-  | '허위정보';
-
-export type DisasterType =
-  | '화재'
-  | '지진'
-  | '홍수'
-  | '산사태'
-  | '태풍'
-  | '기타';
-
-export type RiskLevel = '긴급' | '높음' | '보통' | '낮음';
-
-export interface ReportMedia {
-  id: string;
-  file: File;
-  previewUrl: string;
-  type: 'image' | 'video' | 'unknown';
-}
-
-export interface ReportResponse {
+// ===================== 공통 인터페이스 =====================
+export interface ReportBase {
   id: number;
   disasterType: DisasterType;
+  riskLevel: RiskLevel;
+  disasterDescription: string;
+  address: string;
+  status: DisasterReportStatus;
+  trustScore: number;
+  createdAt: string;
+}
+
+// ===================== 파라미터 =====================
+export interface DisasterGroupParams {
+  latitude: number;
+  longitude: number;
+  radiusMeters?: number;
+  isActive?: boolean;
+  disasterTypesId?: number[];
+  riskLevels?: RiskLevel[];
+}
+
+// ===================== 재난 제보 그룹 조회 =====================
+/* 재난 제보 클러스터 조회: [get] /disaster-reports/grouped */
+export interface DisasterGroup {
+  id: number;
+  disasterType: DisasterType;
+  centerLatitude: number;
+  centerLongitude: number;
+  earliestReportTime: string;
+  latestReportTime: string;
+  reportCount: number;
+  latestRiskLevel: RiskLevel;
+}
+
+/* 재난 제보 그룹 상세 조회: [get] /disaster-reports/grouped/${groupId} */
+export interface DisasterGroupDetail extends Omit<DisasterGroup, 'id'> {
+  groupId: number;
+  isActive: boolean;
+  reports: ReportBase[];
+}
+
+// ===================== 재난 제보 =====================
+/* [post] /disaster-reports */
+export interface ReportRequest {
+  disasterTypeId: number;
   riskLevel: RiskLevel;
   disasterDescription: string;
   latitude: number;
   longitude: number;
   address: string;
-  mediaUrls: string[];
-  status: DisasterReportStatus;
-  createdAt: string;
+  fileUrls: string[];
+}
+
+/* [get] /disaster-reports/${reportId} */
+export interface ReportDetailResponse extends ReportBase {
+  latitude: number;
+  longitude: number;
+  fileUrls: string[];
+  aiGeneratedProbability: number;
+  realProbability: number;
+  aiPrediction: string;
+  informativeProbability: number;
+  notInformativeProbability: number;
+  informativePrediction: string;
   memberId: number;
 }
 
-export interface ReportRequest {
-  disasterType: DisasterType;
-  riskLevel: RiskLevel;
-  disasterDescription: string;
-  latitude: number;
-  longitude: number;
-  address: string;
-  mediaUrls: string[];
-}
-
-export interface AdminReportContent {
-  reportId: number;
-  disasterType: DisasterType;
-  description: string;
-}
-
-export interface AdminReportsResponse {
-  totalElements: number;
-  totalPages: number;
-  first: boolean;
-  last: boolean;
-  size: number;
-  content: AdminReportContent[];
-  number: number;
-  sort: Sort;
-  numberOfElements: number;
-  pageable: Pageable;
-  empty: boolean;
-}
-
-export interface ReportContent {
-  id: number;
-  disasterType: DisasterType;
-  riskLevel: RiskLevel;
-  disasterDescription: string;
-  address: string;
-  status: DisasterReportStatus;
-  createdAt: string;
-}
-
-export interface ReportsResponse {
-  totalElements: number;
-  totalPages: number;
-  first: boolean;
-  last: boolean;
-  size: number;
-  content: ReportContent[];
-  number: number;
-  sort: Sort;
-  numberOfElements: number;
-  pageable: Pageable;
-  empty: boolean;
+/* [get] /disaster-reports/{reportId}/evaluations */
+export interface ReportEvaluationResponse {
+  helpfulCount: number;
+  notHelpfulCount: number;
+  userEvaluatedHelpful: boolean;
+  userEvaluatedNotHelpful: boolean;
 }
