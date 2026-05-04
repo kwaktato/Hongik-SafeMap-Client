@@ -78,7 +78,7 @@ export const BottomSheetReport = ({
 
         <ReportsWrapper>
           {group.reports.map((report, index) => (
-            <Report onClick={() => handleNavigate(`/report/${report.id}`)}>
+            <Report onClick={() => handleNavigate(`/user/report/${report.id}`)}>
               <div className="text">
                 <div className="report">
                   <div>#제보 {index + 1}</div>

@@ -16,7 +16,7 @@ const ProgressBarWrapper = styled.div`
   width: 100%;
   height: 10px;
   background: ${({ theme }) => theme.colors.gray300};
-  border-radius: 50%;
+  border-radius: 12px;
 `;
 
 const ProgressBarFill = styled.div<{ percent: number }>`
