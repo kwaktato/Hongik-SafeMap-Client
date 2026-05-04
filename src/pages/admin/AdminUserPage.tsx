@@ -1,13 +1,12 @@
 import styled from 'styled-components';
 import { useMemo, useState } from 'react';
-import SearchIcon from '@/assets/icons/Search.svg?react';
-import Close from '@/assets/icons/Close.svg?react';
+import { useAdminMembers } from '@/api/admin';
 import { TitleHeader } from '@/components/common/TitleHeader';
-import { UserCard } from '@/components/user/UserCard';
-import { useAdminGetMembers } from '@/api/admin';
+import { UserCard } from '@/components/admin/UserCard';
+import { SearchBar } from '@/components/common/SearchBar';
 
-const AdminUserPage = () => {
-  const { data } = useAdminGetMembers();
+export const AdminUserPage = () => {
+  const { data } = useAdminMembers();
 
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -31,17 +30,13 @@ const AdminUserPage = () => {
         subTitle="사용자의 공신력을 지정하거나 관리할 수 있습니다"
       />
 
-      <SearchBarWrapper>
-        <SearchBar
-          placeholder="검색할 이름 또는 이메일을 입력해주세요."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <IconWrapper>
-          {searchTerm && <Close onClick={() => setSearchTerm('')} />}
-          <Search onClick={() => setSearchTerm(searchTerm)} />
-        </IconWrapper>
-      </SearchBarWrapper>
+      <SearchBar
+        placeholder="검색할 이름 또는 이메일을 입력해주세요."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        onClear={() => setSearchTerm('')}
+        onSearch={() => setSearchTerm(searchTerm)}
+      />
 
       <UserCardWrapper>
         {filteredMembers?.map((member) => (
@@ -57,56 +52,12 @@ const AdminUserPage = () => {
   );
 };
 
-export default AdminUserPage;
-
 const Container = styled.div`
   padding: 20px;
   padding-bottom: 80px;
   display: flex;
   flex-direction: column;
   gap: 20px;
-`;
-
-const SearchBarWrapper = styled.div`
-  margin-bottom: 24px;
-  position: relative;
-`;
-
-const SearchBar = styled.input`
-  box-sizing: border-box;
-  width: 100%;
-  height: 36px;
-  padding: 12px;
-  border-radius: 8px;
-  background: ${({ theme }) => theme.colors.gray50};
-
-  color: ${({ theme }) => theme.colors.gray900};
-  font-size: ${({ theme }) => theme.font.fontSize.text14};
-  font-weight: ${({ theme }) => theme.font.fontWeight.medium};
-
-  &::placeholder {
-    color: ${({ theme }) => theme.colors.gray300};
-  }
-`;
-
-const IconWrapper = styled.div`
-  display: flex;
-  gap: 6px;
-
-  position: absolute;
-  top: 6px;
-  right: 12px;
-
-  svg {
-    cursor: pointer;
-  }
-`;
-
-const Search = styled(SearchIcon)`
-  circle,
-  path {
-    stroke: ${({ theme }) => theme.colors.gray700};
-  }
 `;
 
 const UserCardWrapper = styled.div`
