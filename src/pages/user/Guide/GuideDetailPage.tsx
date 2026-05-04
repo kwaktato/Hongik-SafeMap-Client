@@ -53,6 +53,7 @@ export const GuideDetailPage = () => {
 
 const Container = styled.div`
   margin: 0px 20px;
+  margin-top: 57px;
   position: relative;
 `;
 
@@ -69,14 +70,16 @@ const Tabs = styled.div`
   background: ${({ theme }) => theme.colors.white};
 
   margin: 0 -20px;
-  padding: 0 20px;
-  position: sticky;
-  top: 56px;
+  // padding: 0px 20px;
+  // position: sticky;
+  // top: 56px;
+  // left: 0;
+  // right: 0;
   z-index: 1;
 `;
 
 const Tab = styled.div<{ active: boolean }>`
-  padding: 0px 8px;
+  padding: 8px;
   display: flex;
   justify-content: space-between;
   text-align: center;
@@ -85,6 +88,5 @@ const Tab = styled.div<{ active: boolean }>`
     active ? theme.colors.red600 : theme.colors.gray1000};
   font-size: ${({ theme }) => theme.font.fontSize.detail12};
   font-weight: ${({ theme }) => theme.font.fontWeight.medium};
-  padding-bottom: 2px;
   border-bottom: ${({ active }) => (active ? '2px solid #D4182E' : '')};
 `;
