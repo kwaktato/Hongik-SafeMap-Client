@@ -6,7 +6,6 @@ import type {
 } from '@/types/Pageable';
 import type {
   DisasterReportStatus,
-  DisasterReportStatusEn,
   DisasterType,
   RiskLevel,
 } from '@/types/common';
