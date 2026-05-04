@@ -134,8 +134,10 @@ const ReviewBoxWrapper = styled.div`
 
   .review {
     padding: 10px 16px;
+    box-sizing: border-box;
     width: 100%;
     background: ${({ theme }) => theme.colors.gray300};
+    border-radius: 8px;
 
     color: ${({ theme }) => theme.colors.gray1000};
     font-size: ${({ theme }) => theme.font.fontSize.body16};
