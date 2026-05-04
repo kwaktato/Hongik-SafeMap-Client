@@ -44,9 +44,10 @@ export const MyPage = () => {
         <div className="menu" onClick={}>
           개인정보처리 방침
         </div>
-      </MenuWrapper> */}
+      </MenuWrapper> 
 
       <Border />
+      */}
 
       <MenuWrapper>
         <div className="title">내 정보</div>
