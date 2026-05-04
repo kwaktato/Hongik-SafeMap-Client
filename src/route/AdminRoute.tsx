@@ -1,25 +1,34 @@
-import { Route, Routes } from 'react-router-dom';
-import { AdminTabBar } from '@/components/common/TabBar';
-import AdminHomePage from '@/pages/admin/AdminHomePage';
-import AdminReportPage from '@/pages/admin/AdminReportPage';
-import AdminUserPage from '@/pages/admin/AdminUserPage';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import { AdminSideBar } from '@/components/admin/AdminSideBar';
+import { AdminLayout } from '@/route/AdminLayout';
+import { AdminDashboardPage } from '@/pages/admin/AdminDashboardPage';
+import { AdminReportPage } from '@/pages/admin/AdminReportPage';
+import { AdminStatisticPage } from '@/pages/admin/AdminStatisticPage';
+import { AdminSettingSystemPage } from '@/pages/admin/AdminSettingSystemPage';
+import { AdminSettingAccountPage } from '@/pages/admin/AdminSettingAccountPage';
+import { AdminSettingContentPage } from '@/pages/admin/AdminSettingContentPage';
 
-const AdminRoute = () => {
+export const AdminRoute = () => {
   return (
-    <div
-      style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
-    >
-      <main>
-        <Routes>
-          <Route index element={<AdminHomePage />} />
-          <Route path="reports" element={<AdminReportPage />} />
-          <Route path="users" element={<AdminUserPage />} />
-        </Routes>
-      </main>
+    <div style={{ display: 'flex', minHeight: '100vh' }}>
+      <AdminSideBar />
 
-      <AdminTabBar />
+      <AdminLayout>
+        <Routes>
+          <Route path="/" element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<AdminDashboardPage />} />
+          <Route path="reports" element={<AdminReportPage />} />
+          {/* <Route path="users" element={<AdminUserPage />} /> */}
+          <Route path="statistics" element={<AdminStatisticPage />} />
+
+          <Route path="settings">
+            <Route index element={<Navigate to="system" replace />} />
+            <Route path="system" element={<AdminSettingSystemPage />} />
+            <Route path="contents" element={<AdminSettingContentPage />} />
+            <Route path="account" element={<AdminSettingAccountPage />} />
+          </Route>
+        </Routes>
+      </AdminLayout>
     </div>
   );
 };
-
-export default AdminRoute;

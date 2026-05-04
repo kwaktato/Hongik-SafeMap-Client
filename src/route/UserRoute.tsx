@@ -1,15 +1,66 @@
 import styled from 'styled-components';
-import { Route, Routes } from 'react-router-dom';
-import Alert from '@/assets/icons/Alert.svg?react';
-import { UserTabBar } from '@/components/common/TabBar';
-import UserHomePage from '@/pages/user/UserHomePage';
-import UserReportPage from '@/pages/user/UserReportPage';
-import UserGuidePage from '@/pages/user/UserGuidePage';
-import UserGuideDetailPage from '@/pages/user/UserGuideDetailPage';
-import UserMyPage from '@/pages/user/UserMyPage';
+import { matchPath, Route, Routes, useLocation } from 'react-router-dom';
+import Emergency from '@/assets/icons/Emergency.svg?react';
+import { UserHomePage } from '@/pages/user/UserHomePage';
+import { UserReportDetailPage } from '@/pages/user/UserReportDetailPage';
+import { UserReportPostPage } from '@/pages/user/UserReportPostPage';
+import { ResourceBoardPage } from '@/pages/user/Board/ResourceBoardPage';
+import { ResourceBoardWritePage } from '@/pages/user/Board/ResourceBoardWritePage';
+import { ResourcePostPage } from '@/pages/user/Board/ResourcePostPage';
+import { MissingBoardPage } from '@/pages/user/Board/MissingBoardPage';
+import { MissingBoardWritePage } from '@/pages/user/Board/MissingBoardWritePage';
+import { MissingPostPage } from '@/pages/user/Board/MissingPostPage';
+import { GuidePage } from '@/pages/user/Guide/GuidePage';
+import { GuideDetailPage } from '@/pages/user/Guide/GuideDetailPage';
+import { UserMyRoute } from '@/route/UserMyRoute';
+import { UserTabBar } from '@/components/user/UserTabBar';
 import { useHandleNavigate } from '@/hooks/useHandleNavigate';
 
-const UserRoute = () => {
+export const UserRoute = () => {
+  const location = useLocation();
+
+  const hideTabBarPaths = [
+    '/user/report',
+    '/user/report/:id',
+    '/user/resource/write',
+    '/user/resource/:id',
+    '/user/missing/write',
+    '/user/missing/:id',
+    '/user/my',
+    '/user/my/account',
+    '/user/my/password',
+    '/user/my/medical',
+    '/user/my/contact',
+    '/user/my/report',
+  ];
+  const shouldHideTabBar = () => {
+    return hideTabBarPaths.some((pathPattern) => {
+      return matchPath(pathPattern, location.pathname) !== null;
+    });
+  };
+  const isHideTabBar = shouldHideTabBar();
+
+  const hideReportButtonPaths = [
+    '/user/report',
+    '/user/report/:id',
+    '/user/resource/write',
+    '/user/resource/:id',
+    '/user/missing/write',
+    '/user/missing/:id',
+    '/user/my',
+    '/user/my/account',
+    '/user/my/password',
+    '/user/my/medical',
+    '/user/my/contact',
+    '/user/my/report',
+  ];
+  const shouldHideReportButton = () => {
+    return hideReportButtonPaths.some((pathPattern) => {
+      return matchPath(pathPattern, location.pathname) !== null;
+    });
+  };
+  const isHideReportButton = shouldHideReportButton();
+
   const { handleNavigate } = useHandleNavigate();
 
   return (
@@ -19,40 +70,48 @@ const UserRoute = () => {
       <main>
         <Routes>
           <Route index element={<UserHomePage />} />
-          <Route path="report" element={<UserReportPage />} />
-          <Route path="guide" element={<UserGuidePage />} />
-          <Route path="guide/:id" element={<UserGuideDetailPage />} />
-          <Route path="my" element={<UserMyPage />} />
+
+          <Route path="report" element={<UserReportPostPage />} />
+          <Route path="report/:id" element={<UserReportDetailPage />} />
+
+          <Route path="resource" element={<ResourceBoardPage />} />
+          <Route path="resource/write" element={<ResourceBoardWritePage />} />
+          <Route path="resource/:id" element={<ResourcePostPage />} />
+
+          <Route path="missing" element={<MissingBoardPage />} />
+          <Route path="missing/write" element={<MissingBoardWritePage />} />
+          <Route path="missing/:id" element={<MissingPostPage />} />
+
+          <Route path="guide" element={<GuidePage />} />
+          <Route path="guide/:id" element={<GuideDetailPage />} />
+
+          <Route path="my/*" element={<UserMyRoute />} />
         </Routes>
       </main>
 
-      <ReportButton onClick={() => handleNavigate('/user/report')}>
-        <Alert />
-        긴급 제보하기
-      </ReportButton>
+      {!isHideReportButton && (
+        <ReportButton onClick={() => handleNavigate('/user/report')}>
+          <Emergency />
+        </ReportButton>
+      )}
 
-      <UserTabBar />
+      {!isHideTabBar && <UserTabBar />}
     </div>
   );
 };
 
-export default UserRoute;
-
 const ReportButton = styled.div`
-  padding: 12px;
+  width: 64px;
+  height: 64px;
+  background: ${({ theme }) => theme.colors.red600};
+  border-radius: 50%;
+  cursor: pointer;
   display: flex;
-  gap: 8px;
   align-items: center;
   justify-content: center;
-  background: ${({ theme }) => theme.colors.mainRed};
-  border-radius: 12px;
-  cursor: pointer;
-
-  color: ${({ theme }) => theme.colors.white};
-  font-size: ${({ theme }) => theme.font.fontSize.text16};
-  font-weight: ${({ theme }) => theme.font.fontWeight.medium};
 
   position: fixed;
-  bottom: 64px;
-  right: 8px;
+  bottom: 76px;
+  right: 20px;
+  z-index: 5;
 `;
