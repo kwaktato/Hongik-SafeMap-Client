@@ -67,9 +67,9 @@ export const RecordSection = () => {
             <img src={Calender} alt="calendar" />
             <DateInput
               type="date"
-              value={startDate}
-              isSelected={startDate !== ''}
-              onChange={(e) => setStartDate(e.target.value)}
+              value={endDate}
+              isSelected={endDate !== ''}
+              onChange={(e) => setEndDate(e.target.value)}
               onClick={(e) => e.currentTarget.showPicker()}
             />
           </DateLabel>
@@ -107,7 +107,8 @@ export const RecordSection = () => {
           <span>초기화</span>
         </Button>
       </div>
-      <div className="reports">
+
+      <div className="records">
         {filteredRecords.map((record) => (
           <AdminRecordCard record={record} />
         ))}
@@ -123,6 +124,7 @@ const RecordWrapper = styled.div`
 
   .records {
     display: grid;
+    align-items: flex-start;
     gap: 20px;
 
     grid-template-columns: repeat(1, 1fr);

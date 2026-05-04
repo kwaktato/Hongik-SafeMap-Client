@@ -12,7 +12,7 @@ import { RecordGraph } from '@/components/admin/statistics/RecordGraph';
 import type { RiskLevel } from '@/types/common';
 import type { DisasterRecord } from '@/types/Admin';
 import {
-  formatDateDuration,
+  formatDateTime,
   formatSummaryDate,
   formatYearMonth,
 } from '@/utils/formatDate';
@@ -83,7 +83,7 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
         </div>
 
         <div className="row6">
-          <div>
+          <div className="row4">
             <Calender />
             {formatSummaryDate(
               record.earliestReportTime,
@@ -110,17 +110,20 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
                 <div className="detail">
                   발생 기간
                   <span>
-                    {formatDateDuration(
+                    {formatDateTime(record.earliestReportTime)}
+                    <br />~ {formatDateTime(record.latestReportTime)}
+                    {/* {formatDateDuration(
                       record.earliestReportTime,
                       record.latestReportTime,
-                    )}
+                    )} */}
                   </span>
                 </div>
                 <div className="detail">
                   피해 지역<span>{formatAddress(addressData, true)}</span>
                 </div>
                 <div className="detail">
-                  심각도<span>{text}</span>
+                  심각도
+                  <span>{text}</span>
                 </div>
               </div>
               <div className="box">
@@ -211,6 +214,7 @@ const RecordWrapper = styled.div`
 
   .row6 {
     display: flex;
+    align-items: center;
     gap: 6px;
 
     color: ${({ theme }) => theme.colors.gray700};
@@ -224,6 +228,7 @@ const RecordWrapper = styled.div`
 
   .border {
     width: 1px;
+    height: 12px;
     background: ${({ theme }) => theme.colors.gray500};
   }
 `;
@@ -240,6 +245,9 @@ const DetailWrapper = styled.div`
   }
 
   .box {
+    width: 100%;
+    padding: 16px;
+    padding-bottom: 0px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -252,12 +260,17 @@ const DetailWrapper = styled.div`
   }
 
   .detail {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
     color: ${({ theme }) => theme.colors.gray700};
     font-size: ${({ theme }) => theme.font.fontSize.detail12};
     font-weight: ${({ theme }) => theme.font.fontWeight.medium};
   }
 
   span {
+    text-align: right;
     color: ${({ theme }) => theme.colors.gray1000};
   }
 `;

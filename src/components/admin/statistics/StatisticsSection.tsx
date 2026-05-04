@@ -104,9 +104,9 @@ export const StatisticsSection = ({
                   <img src={Calender} alt="calendar" />
                   <DateInput
                     type="date"
-                    value={startDate}
-                    isSelected={startDate !== ''}
-                    onChange={(e) => setStartDate(e.target.value)}
+                    value={endDate}
+                    isSelected={endDate !== ''}
+                    onChange={(e) => setEndDate(e.target.value)}
                     onClick={(e) => e.currentTarget.showPicker()}
                   />
                 </DateLabel>

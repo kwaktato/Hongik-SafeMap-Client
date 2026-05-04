@@ -31,21 +31,17 @@ export const RecordGraph = ({
   };
 
   return (
-    <div style={{ width: '100%', height: 150 }}>
+    <div style={{ width: '100%', height: 100 }}>
       <ResponsiveContainer>
-        <BarChart
-          data={data}
-          layout="vertical"
-          margin={{ left: 20, right: 30 }}
-        >
-          <XAxis type="number" hide />
+        <BarChart data={data} layout="vertical" margin={{ left: 0, right: 20 }}>
+          <XAxis type="number" />
           <YAxis
             dataKey="name"
             type="category"
-            width={70}
+            width={40}
             tick={{ fontSize: 12 }}
-            tickLine={false} // Y축 눈금선 제거
-            axisLine={false} // Y축 세로선 제거
+            // tickLine={false} // Y축 눈금선 제거
+            // axisLine={false} // Y축 세로선 제거
           />
 
           <Bar dataKey="count" shape={<CustomBar />} barSize={20} />
