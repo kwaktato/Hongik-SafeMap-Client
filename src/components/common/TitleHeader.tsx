@@ -1,56 +1,80 @@
 import styled from 'styled-components';
+import Logo from '@/assets/icons/LogoHome.svg?react';
+import My from '@/assets/icons/My.svg?react';
+import { useHandleNavigate } from '@/hooks/useHandleNavigate';
+
+interface TitleMainSubProps {
+  main: string;
+  sub: string;
+  align?: string;
+}
+
+export const TitleMainSub = ({
+  main,
+  sub,
+  align = 'flex-start',
+}: TitleMainSubProps) => {
+  return (
+    <Title align={align}>
+      <div className="main">{main}</div>
+      <div className="sub">{sub}</div>
+    </Title>
+  );
+};
+
+const Title = styled.div<{ align: string }>`
+  display: flex;
+  flex-direction: column;
+  align-items: ${({ align }) => align};
+  gap: 2px;
+
+  .main {
+    color: ${({ theme }) => theme.colors.gray1000};
+    font-size: ${({ theme }) => theme.font.fontSize.body14};
+    font-weight: ${({ theme }) => theme.font.fontWeight.bold};
+  }
+
+  .sub {
+    color: ${({ theme }) => theme.colors.gray1000};
+    font-size: ${({ theme }) => theme.font.fontSize.detail12};
+    font-weight: ${({ theme }) => theme.font.fontWeight.medium};
+  }
+`;
 
 interface TitleHeaderProps {
   mainTitle: string;
   subTitle: string;
-  right?: React.ReactNode;
+  home?: boolean;
 }
 
 export const TitleHeader = ({
+  home = false,
   mainTitle,
   subTitle,
-  right,
 }: TitleHeaderProps) => {
+  const { handleNavigate } = useHandleNavigate();
+
   return (
     <TitleHeaderWrapper>
-      <TitleHeaderLeft>
-        <div className="main">{mainTitle}</div>
-        <div className="sub">{subTitle}</div>
-      </TitleHeaderLeft>
-      <TitleHeaderRight>{right}</TitleHeaderRight>
+      {home ? <Logo /> : <TitleMainSub main={mainTitle} sub={subTitle} />}
+      <My onClick={() => handleNavigate('/user/my')} />
     </TitleHeaderWrapper>
   );
 };
 
 const TitleHeaderWrapper = styled.div`
-  background: ${({ theme }) => theme.colors.white};
-  width: 100%;
+  padding: 0px 20px;
   height: 56px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-`;
+  background: ${({ theme }) => theme.colors.white};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.gray300};
 
-const TitleHeaderLeft = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  justify-content: flex-start;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
 
-  .main {
-    color: ${({ theme }) => theme.colors.gray900};
-    font-size: ${({ theme }) => theme.font.fontSize.text20};
-    font-weight: ${({ theme }) => theme.font.fontWeight.bold};
-  }
-
-  .sub {
-    color: ${({ theme }) => theme.colors.gray500};
-    font-size: ${({ theme }) => theme.font.fontSize.text14};
-    font-weight: ${({ theme }) => theme.font.fontWeight.regular};
-  }
-`;
-
-const TitleHeaderRight = styled.div`
-  display: flex;
-  justify-content: flex-end;
+  z-index: 1;
 `;

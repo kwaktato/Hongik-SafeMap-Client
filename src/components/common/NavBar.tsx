@@ -17,40 +17,40 @@ export const NavBar = ({ left, center, right }: NavbarProps) => {
 };
 
 const NavbarWrapper = styled.div`
-  background: ${({ theme }) => theme.colors.white};
   width: 100%;
   height: 56px;
   display: flex;
   align-items: center;
+  background: ${({ theme }) => theme.colors.white};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.gray300};
+  z-index: 1;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
 `;
 
 const NavLeft = styled.div`
+  padding-left: 20px;
   flex: 1;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
   justify-content: flex-start;
-
-  .main {
-    color: ${({ theme }) => theme.colors.gray900};
-    font-size: ${({ theme }) => theme.font.fontSize.text20};
-    font-weight: ${({ theme }) => theme.font.fontWeight.bold};
-  }
-
-  .sub {
-    color: ${({ theme }) => theme.colors.gray500};
-    font-size: ${({ theme }) => theme.font.fontSize.text14};
-    font-weight: ${({ theme }) => theme.font.fontWeight.regular};
-  }
 `;
 
 const NavCenter = styled.div`
   flex: 1;
   display: flex;
   justify-content: center;
+  white-space: nowrap;
+
+  color: ${({ theme }) => theme.colors.gray900};
+  font-size: ${({ theme }) => theme.font.fontSize.title20};
+  font-weight: ${({ theme }) => theme.font.fontWeight.bold};
 `;
 
 const NavRight = styled.div`
+  padding-right: 20px;
   flex: 1;
   display: flex;
   justify-content: flex-end;

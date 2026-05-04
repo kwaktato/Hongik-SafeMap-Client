@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-type ButtonColor = 'mainBlue' | 'subBlue' | 'white' | 'gray' | 'red' | 'black';
+type ButtonColor = 'gray' | 'lightGray' | 'red' | 'black' | 'white';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonColor;
@@ -10,10 +10,10 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const Button = ({
-  variant = 'mainBlue',
+  variant = 'gray',
   children,
-  width = '',
-  height = '',
+  width = '100%',
+  height = '44px',
   ...props
 }: ButtonProps) => {
   return (
@@ -28,49 +28,53 @@ const StyledButton = styled.button<{
   width: string;
   height: string;
 }>`
-  width: ${({ width }) => (width ? width : '100%')};
+  width: ${({ width }) => width};
   height: ${({ height }) => height};
 
-  font-size: ${({ theme }) => theme.font.fontSize.text16};
-  font-weight: ${({ theme }) => theme.font.fontWeight.bold};
+  font-size: ${({ theme }) => theme.font.fontSize.body16};
+  font-weight: ${({ theme }) => theme.font.fontWeight.medium};
 
-  border-radius: 12px;
+  border-radius: 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  span {
+    padding-top: 3px;
+  }
 
   ${({ variant }) => getVariantStyle(variant)}
 `;
 
 const getVariantStyle = (variant: ButtonColor) => {
   switch (variant) {
-    case 'mainBlue':
-      return css`
-        background-color: ${({ theme }) => theme.colors.mainBlue};
-        color: ${({ theme }) => theme.colors.white};
-      `;
-    case 'subBlue':
-      return css`
-        background-color: ${({ theme }) => theme.colors.subBlue};
-        color: ${({ theme }) => theme.colors.mainBlue};
-      `;
-    case 'white':
-      return css`
-        background-color: ${({ theme }) => theme.colors.white};
-        color: ${({ theme }) => theme.colors.gray900};
-        border: 1px solid ${({ theme }) => theme.colors.gray100};
-      `;
     case 'gray':
       return css`
-        background-color: ${({ theme }) => theme.colors.gray200};
+        background-color: ${({ theme }) => theme.colors.gray600};
         color: ${({ theme }) => theme.colors.white};
+      `;
+    case 'lightGray':
+      return css`
+        background-color: ${({ theme }) => theme.colors.gray200};
+        color: ${({ theme }) => theme.colors.gray700};
       `;
     case 'red':
       return css`
-        background-color: ${({ theme }) => theme.colors.mainRed};
+        background-color: ${({ theme }) => theme.colors.red600};
         color: ${({ theme }) => theme.colors.white};
       `;
     case 'black':
       return css`
-        background-color: ${({ theme }) => theme.colors.black};
+        background-color: ${({ theme }) => theme.colors.gray1000};
         color: ${({ theme }) => theme.colors.white};
+      `;
+    case 'white':
+      return css`
+        background-color: ${({ theme }) => theme.colors.white};
+        color: ${({ theme }) => theme.colors.gray1000};
+        border: 1px solid ${({ theme }) => theme.colors.gray400};
       `;
   }
 };
