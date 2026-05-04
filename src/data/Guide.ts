@@ -1,6 +1,6 @@
-import type { GuideItem } from '@/types/Guide';
+import type { SafetyTipItem } from '@/types/SafetyTips';
 
-export const mockGuides: GuideItem[] = [
+export const mockGuides: SafetyTipItem[] = [
   {
     id: '1',
     title: '지진 발생 시 행동 요령',
