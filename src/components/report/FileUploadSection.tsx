@@ -1,18 +1,24 @@
 import styled from 'styled-components';
-import { useCallback, useRef } from 'react';
-import Close from '@/assets/icons/Close.svg?react';
-import Camera from '@/assets/icons/Camera.svg?react';
-import type { ReportMedia } from '@/types/Report';
+import { useCallback, useRef, useState } from 'react';
+import Close from '@/assets/icons/TextRemove.svg?react';
+import Camera from '@/assets/icons/ImageS.svg?react';
+import Exit from '@/assets/icons/Exit.svg?react';
+import { Button } from '@/components/common/Button';
+import { Modal } from '@/components/common/Modal';
+import type { MediaItem } from '@/types/common';
 
 interface FileUploadSectionProps {
-  uploadedFiles: ReportMedia[];
-  setUploadedFiles: React.Dispatch<React.SetStateAction<ReportMedia[]>>;
+  uploadedFiles: MediaItem[];
+  setUploadedFiles: React.Dispatch<React.SetStateAction<MediaItem[]>>;
 }
 
 export const FileUploadSection = ({
   uploadedFiles,
   setUploadedFiles,
 }: FileUploadSectionProps) => {
+  const [previewImage, setPreviewImage] = useState('');
+  const [isImgModalOpen, setIsImgModalOpen] = useState(false);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handlePhotoButtonClick = useCallback(() => {
@@ -24,21 +30,19 @@ export const FileUploadSection = ({
       const files = event.target.files;
 
       if (files && files.length > 0) {
-        const newUploadedFiles: ReportMedia[] = Array.from(files).map(
-          (file) => {
-            const fileType = file.type.startsWith('image/')
-              ? 'image'
-              : file.type.startsWith('video/')
-                ? 'video'
-                : 'unknown';
-            return {
-              id: `${file.name}`,
-              file: file,
-              previewUrl: URL.createObjectURL(file),
-              type: fileType,
-            };
-          },
-        );
+        const newUploadedFiles: MediaItem[] = Array.from(files).map((file) => {
+          const fileType = file.type.startsWith('image/')
+            ? 'image'
+            : file.type.startsWith('video/')
+              ? 'video'
+              : 'unknown';
+          return {
+            id: `${file.name}`,
+            file: file,
+            previewUrl: URL.createObjectURL(file),
+            type: fileType,
+          };
+        });
 
         setUploadedFiles((prevFiles) => [...prevFiles, ...newUploadedFiles]);
       }
@@ -61,18 +65,33 @@ export const FileUploadSection = ({
     [setUploadedFiles],
   );
 
+  const handleImgClick = (url: string) => {
+    setPreviewImage(url);
+    setIsImgModalOpen(true);
+  };
+
   return (
     <>
-      <PhotoButton onClick={handlePhotoButtonClick}>
+      <Button
+        variant="white"
+        onClick={handlePhotoButtonClick}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '4px',
+          lineHeight: '23px',
+        }}
+      >
         <Camera />
         파일 선택
-      </PhotoButton>
+      </Button>
 
       <input
         type="file"
         ref={fileInputRef}
         multiple
-        accept="image/*,video/*"
+        accept="image/*, video/*"
         onChange={handleFileChange}
         style={{ display: 'none' }}
       />
@@ -85,6 +104,7 @@ export const FileUploadSection = ({
                 <img
                   src={uploadedFile.previewUrl}
                   alt={uploadedFile.file.name}
+                  onClick={() => handleImgClick(uploadedFile.previewUrl)}
                 />
               ) : uploadedFile.type === 'video' ? (
                 <video src={uploadedFile.previewUrl} controls />
@@ -96,29 +116,22 @@ export const FileUploadSection = ({
           ))}
         </Photos>
       )}
+
+      <Modal isOpen={isImgModalOpen} onClose={() => setIsImgModalOpen(false)}>
+        <ModalClose onClick={() => setIsImgModalOpen(false)} />
+        <img src={previewImage} />
+      </Modal>
     </>
   );
 };
 
-const PhotoButton = styled.button`
-  padding: 12px;
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  align-items: center;
-  background: ${({ theme }) => theme.colors.white};
-  border: 1px solid ${({ theme }) => theme.colors.gray100};
-  border-radius: 12px;
-
-  color: ${({ theme }) => theme.colors.gray900};
-  font-size: ${({ theme }) => theme.font.fontSize.text14};
-  font-weight: ${({ theme }) => theme.font.fontWeight.medium};
-`;
-
 const Photos = styled.div`
+  margin-top: 8px;
   display: flex;
   gap: 8px;
+  align-items: center;
   overflow-x: scroll;
+  overflow-y: hidden;
   flex-wrap: nowrap;
 
   -ms-overflow-style: none;
@@ -128,15 +141,15 @@ const Photos = styled.div`
   }
 
   .photo {
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
     position: relative;
   }
 
   img,
   video {
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
     object-fit: cover;
   }
 `;
@@ -145,6 +158,13 @@ const DeletePhoto = styled(Close)`
   cursor: pointer;
 
   position: absolute;
-  top: 6px;
-  right: 4px;
+  top: 4px;
+  right: 3px;
+`;
+
+const ModalClose = styled(Exit)`
+  cursor: pointer;
+  position: absolute;
+  top: 4px;
+  right: 3px;
 `;
