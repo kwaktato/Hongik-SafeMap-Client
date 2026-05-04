@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { ActionCard } from '@/components/guide/ActionCard';
-import type { Actions } from '@/types/Guide';
+import { ActionCard } from '@/components/user/guide/ActionCard';
+import type { Actions } from '@/types/SafetyTips';
 
 interface ActionSectionProps {
   guides: Actions[] | undefined;
@@ -13,7 +13,6 @@ export const ActionSection = ({ guides }: ActionSectionProps) => {
 
   return (
     <SectionWrapper>
-      <div className="section">행동 요령</div>
       {guides?.map((guide, index) => (
         <ActionCard key={index} index={index} guide={guide} />
       ))}
@@ -22,11 +21,9 @@ export const ActionSection = ({ guides }: ActionSectionProps) => {
 };
 
 const SectionWrapper = styled.div`
+  margin: 72px 0px;
+
   display: flex;
   flex-direction: column;
-  gap: 12px;
-
-  color: ${({ theme }) => theme.colors.gray900};
-  font-size: ${({ theme }) => theme.font.fontSize.text16};
-  font-weight: ${({ theme }) => theme.font.fontWeight.semibold};
+  gap: 8px;
 `;

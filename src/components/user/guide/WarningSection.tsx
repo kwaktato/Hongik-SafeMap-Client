@@ -12,10 +12,9 @@ export const WarningSection = ({ warnings }: WarningSectionProps) => {
 
   return (
     <SectionWrapper>
-      <div className="section">주의사항</div>
       {warnings.map((warning, index) => (
         <div key={index} className="warning">
-          <Warning /> <div>{warning}</div>
+          <Warning /> <span>{warning}</span>
         </div>
       ))}
     </SectionWrapper>
@@ -23,25 +22,30 @@ export const WarningSection = ({ warnings }: WarningSectionProps) => {
 };
 
 const SectionWrapper = styled.div`
+  margin: 72px 0px;
+
   display: flex;
   flex-direction: column;
-  gap: 12px;
-
-  color: ${({ theme }) => theme.colors.gray900};
-  font-size: ${({ theme }) => theme.font.fontSize.text16};
-  font-weight: ${({ theme }) => theme.font.fontWeight.semibold};
+  gap: 8px;
 
   .warning {
-    display: flex;
-    gap: 8px;
-    align-items: center;
+    padding: 5px 12px 5px 8px;
 
-    color: ${({ theme }) => theme.colors.gray900};
-    font-size: ${({ theme }) => theme.font.fontSize.text14};
-    font-weight: ${({ theme }) => theme.font.fontWeight.medium};
+    display: flex;
+    gap: 6px;
+    border: 1.5px solid ${({ theme }) => theme.colors.gray400};
+    border-radius: 8px;
+
+    span {
+      padding: 8px 0px;
+      color: ${({ theme }) => theme.colors.gray1000};
+      font-size: ${({ theme }) => theme.font.fontSize.body16};
+      font-weight: ${({ theme }) => theme.font.fontWeight.medium};
+    }
 
     svg {
-      color: ${({ theme }) => theme.colors.mainRed};
+      color: ${({ theme }) => theme.colors.red600};
+      flex-shrink: 0;
     }
   }
 `;
