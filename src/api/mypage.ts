@@ -1,21 +1,23 @@
-import { axiosInstance } from './axiosInstance';
+import { axiosInstance } from '@/api/axiosInstance';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import type { PageableRequest } from '@/types/Pageable';
 import type {
   EmergencyContactsRequest,
-  EmergencyContact,
-  MyResponse,
+  EmergencyContactResponse,
+  AccountResponse,
   PasswordRequest,
-  SensitiveInfoRequest,
-  SensitiveInfoResponse,
-  EmergencyContactsResponse,
+  MedicalInfoRequest,
+  MedicalInfoResponse,
+  MyReportListResponse,
+  MyResourceReportListResponse,
+  MyMissingReportListResponse,
 } from '@/types/Mypage';
-import type { ReportsResponse } from '@/types/Report';
-import type { PageableRequest } from '@/types/Pageable';
 
-// 마이페이지 정보 조회
-export const useGetMy = () => {
-  return useQuery<MyResponse>({
-    queryKey: ['my'],
+// ===================== 계정 정보 =====================
+/* 마이페이지 정보 조회 */
+export const useMyAccount = () => {
+  return useQuery<AccountResponse>({
+    queryKey: ['me', 'account'],
     queryFn: async () => {
       const response = await axiosInstance.get('/members/me');
       return response.data;
@@ -23,31 +25,24 @@ export const useGetMy = () => {
   });
 };
 
-// 비밀번호 변경
-export const usePatchPassword = () => {
-  const queryClient = useQueryClient();
-
+/* 비밀번호 변경 */
+export const useUpdatePasswordMutation = () => {
   return useMutation({
-    mutationFn: async (payload: PasswordRequest) => {
+    mutationFn: async (request: PasswordRequest) => {
       const response = await axiosInstance.patch(
         '/members/me/password',
-        payload,
+        request,
       );
       return response;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['my'] });
-    },
-    onError: (error) => {
-      console.error('usePatchPassword 실패', error);
     },
   });
 };
 
-// 민감정보 조회
-export const useGetSensitiveInfo = () => {
-  return useQuery<SensitiveInfoResponse>({
-    queryKey: ['sensitiveInfo'],
+// ===================== 의료정보 =====================
+/* 의료 정보 조회 */
+export const useMedicalInfo = () => {
+  return useQuery<MedicalInfoResponse>({
+    queryKey: ['me', 'medical'],
     queryFn: async () => {
       const response = await axiosInstance.get('/members/me/sensitive-info');
       return response.data;
@@ -55,61 +50,87 @@ export const useGetSensitiveInfo = () => {
   });
 };
 
-// 민감정보 수정
-export const usePutSensitiveInfo = () => {
+/* 의료 정보 수정 */
+export const useUpdateMedicalInfoMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (payload: SensitiveInfoRequest) => {
-      const response = await axiosInstance.put<SensitiveInfoResponse>(
+    mutationFn: async (request: MedicalInfoRequest) => {
+      const response = await axiosInstance.put<MedicalInfoResponse>(
         '/members/me/sensitive-info',
-        payload,
+        request,
       );
       return response.data;
     },
-    onSuccess: (data) => {
-      console.log('usePutSensitiveInfo 성공:', data);
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['sensitiveInfo'],
+        queryKey: ['me', 'medical'],
       });
-    },
-    onError: (error) => {
-      console.error('usePutSensitiveInfo 실패:', error);
     },
   });
 };
 
-// 비상연락처 수정
-export const usePutEmergencyContact = () => {
+// ===================== 비상연락처 =====================
+/* 비상연락처 조회 */
+export const useEmergencyContact = () => {
+  return useQuery<EmergencyContactResponse[]>({
+    queryKey: ['me', 'emergencyContacts'],
+    queryFn: async () => {
+      const response = await axiosInstance.get(
+        '/members/me/emergency-contacts',
+      );
+      return response.data;
+    },
+  });
+};
+
+/* 비상연락처 등록 */
+export const useCreateEmergencyContactMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (request: EmergencyContactsRequest) => {
+      const response = await axiosInstance.post(
+        '/members/me/emergency-contacts',
+        request,
+      );
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['me', 'emergencyContacts'],
+      });
+    },
+  });
+};
+
+/* 비상연락처 수정 */
+export const useUpdateEmergencyContactMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({
       emergencyContactId,
-      payload,
+      request,
     }: {
       emergencyContactId: number;
-      payload: EmergencyContactsRequest;
+      request: EmergencyContactsRequest;
     }) => {
-      const response = await axiosInstance.put<EmergencyContact>(
+      const response = await axiosInstance.put<EmergencyContactResponse>(
         `/members/me/emergency-contacts/${emergencyContactId}`,
-        payload,
+        request,
       );
       return response.data;
     },
-    onSuccess: (data) => {
-      console.log('usePutEmergencyContract 성공:', data);
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['emergencyContact'],
+        queryKey: ['me', 'emergencyContacts'],
       });
-    },
-    onError: (error) => {
-      console.error('usePutEmergencyContract 실패:', error);
     },
   });
 };
 
-// 비상연락처 삭제
+/* 비상연락처 삭제 */
 export const useDeleteEmergencyContact = () => {
   const queryClient = useQueryClient();
 
@@ -120,61 +141,47 @@ export const useDeleteEmergencyContact = () => {
       );
       return response;
     },
-    onSuccess: (response) => {
-      console.log('useDeleteEmergencyContact 성공:', response.data);
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['emergencyContact'],
+        queryKey: ['me', 'emergencyContacts'],
       });
-    },
-    onError: (error) => {
-      console.error('useDeleteEmergencyContact 실패:', error);
     },
   });
 };
 
-// 비상연락처 조회
-export const useGetEmergencyContact = () => {
-  return useQuery<EmergencyContactsResponse>({
-    queryKey: ['emergencyContact'],
+// ===================== 내 제보 =====================
+/* 내 제보 조회 */
+export const useGetMyReports = (pageable: PageableRequest) => {
+  return useQuery<MyReportListResponse>({
+    queryKey: ['me', 'reports', pageable],
     queryFn: async () => {
-      const response = await axiosInstance.get(
-        '/members/me/emergency-contacts',
-      );
+      const response = await axiosInstance.get('/members/me/reports', {
+        params: pageable,
+      });
       return response.data;
     },
   });
 };
 
-// 비상연락처 등록
-export const usePostEmergencyContact = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (payload: EmergencyContactsRequest) => {
-      const response = await axiosInstance.post(
-        '/members/me/emergency-contacts',
-        payload,
-      );
-      return response;
-    },
-    onSuccess: (response) => {
-      console.log('usePutEmergencyContract 성공:', response.data);
-      queryClient.invalidateQueries({
-        queryKey: ['emergencyContact'],
+/* 내 자원 게시글 조회 */
+export const useGetMyResourceReports = (pageable: PageableRequest) => {
+  return useQuery<MyResourceReportListResponse>({
+    queryKey: ['me', 'resource', pageable],
+    queryFn: async () => {
+      const response = await axiosInstance.get('/members/me/resource-reports', {
+        params: pageable,
       });
-    },
-    onError: (error) => {
-      console.error('usePutEmergencyContract 실패:', error);
+      return response.data;
     },
   });
 };
 
-// 내 제보 조회
-export const useGetMyReports = (pageable: PageableRequest) => {
-  return useQuery<ReportsResponse>({
-    queryKey: ['myReports', pageable],
+/* 내 실종 게시글 조회 */
+export const useGetMyMissingReports = (pageable: PageableRequest) => {
+  return useQuery<MyMissingReportListResponse>({
+    queryKey: ['me', 'missing', pageable],
     queryFn: async () => {
-      const response = await axiosInstance.get('/members/me/reports', {
+      const response = await axiosInstance.get('/members/me/lost-reports', {
         params: pageable,
       });
       return response.data;

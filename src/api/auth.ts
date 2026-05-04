@@ -1,4 +1,4 @@
-import { axiosInstance } from './axiosInstance';
+import { axiosInstance } from '@/api/axiosInstance';
 import { useMutation } from '@tanstack/react-query';
 import type {
   SignupResponse,
@@ -8,58 +8,52 @@ import type {
   SNSLoginRequest,
 } from '@/types/Auth';
 
+const setAuthTokens = (data: LoginResponse) => {
+  localStorage.setItem('accessToken', data.accessToken);
+  localStorage.setItem('refreshToken', data.refreshToken);
+};
+
+/* 회원가입 */
 export const useSignupMutation = () => {
   return useMutation({
-    mutationFn: async (payload: SignupRequest) => {
+    mutationFn: async (request: SignupRequest) => {
       const response = await axiosInstance.post<SignupResponse>(
         '/signup',
-        payload,
+        request,
       );
       return response.data;
-    },
-    onSuccess: (data) => {
-      console.log('useSignupMutation 성공', data);
-    },
-    onError: (error) => {
-      console.error('useSignupMutation 실패:', error);
     },
   });
 };
 
+/* SNS 로그인 (카카오, 구글 등) */
 export const useSNSLoginMutation = () => {
   return useMutation({
-    mutationFn: async (payload: SNSLoginRequest) => {
+    mutationFn: async (request: SNSLoginRequest) => {
       const response = await axiosInstance.post<LoginResponse>(
         '/auth/login/sns',
-        payload,
+        request,
       );
       return response.data;
     },
     onSuccess: (data) => {
-      console.log('useSNSLoginMutation 성공', data);
-    },
-    onError: (error) => {
-      console.error('useSNSLoginMutation 실패:', error);
+      setAuthTokens(data);
     },
   });
 };
 
+/* 일반 로그인 */
 export const useGeneralLoginMutation = () => {
   return useMutation({
-    mutationFn: async (payload: GeneralLoginRequest) => {
+    mutationFn: async (request: GeneralLoginRequest) => {
       const response = await axiosInstance.post<LoginResponse>(
         '/auth/login/general',
-        payload,
+        request,
       );
       return response.data;
     },
     onSuccess: (data) => {
-      console.log('useGeneralLoginMutation 성공', data);
-      localStorage.setItem('accessToken', data.accessToken);
-      localStorage.setItem('refreshToken', data.refreshToken);
-    },
-    onError: (error) => {
-      console.error('useGeneralLoginMutation 실패:', error);
+      setAuthTokens(data);
     },
   });
 };
@@ -70,14 +64,9 @@ export const useLogoutMutation = () => {
       const response = await axiosInstance.post('/auth/logout');
       return response;
     },
-    onSuccess: (response) => {
-      console.log('useLogoutMutation 성공', response.data);
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
+    onSuccess: () => {
+      localStorage.clear();
       window.location.href = '/';
-    },
-    onError: (error) => {
-      console.error('useLogoutMutation 실패:', error);
     },
   });
 };
