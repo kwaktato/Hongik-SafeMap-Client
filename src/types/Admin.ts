@@ -38,7 +38,7 @@ export interface AdminReport {
 }
 
 export interface ReportStatusRequest {
-  status: DisasterReportStatusEn;
+  status: DisasterReportStatus;
   reviewComment: string;
 }
 

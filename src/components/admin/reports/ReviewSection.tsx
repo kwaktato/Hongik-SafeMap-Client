@@ -7,7 +7,7 @@ import { useUpdateReportStatusMutation } from '@/api/admin';
 import { Button } from '@/components/common/Button';
 import { Toast } from '@/components/common/Toast';
 import type { AdminReport } from '@/types/Admin';
-import type { DisasterReportStatusEn } from '@/types/common';
+import type { DisasterReportStatus } from '@/types/common';
 
 interface ReviewSectionProps {
   report: AdminReport;
@@ -29,7 +29,7 @@ export const ReviewSection = ({ report }: ReviewSectionProps) => {
     report.reportId,
   );
 
-  const handleUpdateStatus = (status: DisasterReportStatusEn) => {
+  const handleUpdateStatus = (status: DisasterReportStatus) => {
     if (!reviewComment.trim()) {
       alert('검토 의견을 입력해주세요.');
       return;
@@ -80,14 +80,14 @@ export const ReviewSection = ({ report }: ReviewSectionProps) => {
 
       {isEditing || !hasExistingReview ? (
         <div className="buttons">
-          <Button
-            variant="white"
-            onClick={() => handleUpdateStatus('APPROVED')}
-          >
+          <Button variant="white" onClick={() => handleUpdateStatus('승인')}>
             <Approve />
             승인
           </Button>
-          <Button variant="white" onClick={() => handleUpdateStatus('BLINDED')}>
+          <Button
+            variant="white"
+            onClick={() => handleUpdateStatus('블라인드')}
+          >
             <Blind />
             블라인드
           </Button>
