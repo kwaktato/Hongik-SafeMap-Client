@@ -24,6 +24,10 @@ const GlobalStyle = createGlobalStyle`
     word-spacing: -5px;
   }
 
+  input, textarea {
+    font-family: inherit;
+  }
+
   p, h1, h2, h3 {
     margin: 0;
     padding: 0;
