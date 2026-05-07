@@ -1,11 +1,26 @@
 import styled from 'styled-components';
+import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import Logo from '@/assets/icons/LogoAdmin.svg?react';
+import { useLogoutMutation } from '@/api/auth';
 import { ADMIN_SIDE_BAR } from '@/constant/MenuItems';
+import { Modal } from '@/components/common/Modal';
+import { ModalButtons } from '@/components/common/ModalButtons';
 import { useHandleNavigate } from '@/hooks/useHandleNavigate';
 
 export const AdminSideBar = () => {
   const { handleNavigate } = useHandleNavigate();
+
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
+  const { mutate: logout } = useLogoutMutation();
+  const handleLogout = () => {
+    logout(undefined, {
+      onError: () => {
+        alert('로그아웃에 실패했습니다. 다시 시도해주세요.');
+      },
+    });
+  };
 
   return (
     <SideBarWrapper>
@@ -15,9 +30,21 @@ export const AdminSideBar = () => {
         {ADMIN_SIDE_BAR.map((tab) => {
           const hasChildren = tab.children && tab.children.length > 0;
 
+          if (tab.isAction) {
+            return (
+              <LogoutItem
+                key={tab.key}
+                onClick={() => setIsLogoutModalOpen(true)}
+              >
+                {tab.icon}
+                <span>{tab.label}</span>
+              </LogoutItem>
+            );
+          }
+
           return (
             <div key={tab.key}>
-              <MenuItem to={tab.path} end={tab.end}>
+              <MenuItem to={tab.path || ''} end={tab.end}>
                 {tab.icon}
                 <span>{tab.label}</span>
               </MenuItem>
@@ -35,6 +62,21 @@ export const AdminSideBar = () => {
           );
         })}
       </MenuWrapper>
+
+      <Modal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+      >
+        <ModalButtons
+          onClose={() => setIsLogoutModalOpen(false)}
+          title="로그아웃 하시겠습니까?"
+          detail="현재 계정에서 로그아웃됩니다. 계속하시겠습니까?"
+          left="취소"
+          right="로그아웃"
+          handleLeftBtnClick={() => setIsLogoutModalOpen(false)}
+          handleRightBtnClick={handleLogout}
+        />
+      </Modal>
     </SideBarWrapper>
   );
 };
@@ -83,6 +125,31 @@ const MenuItem = styled(NavLink)`
   }
 
   &.active {
+    color: ${({ theme }) => theme.colors.red600};
+  }
+`;
+
+const LogoutItem = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  color: ${({ theme }) => theme.colors.gray700};
+
+  span {
+    font-size: ${({ theme }) => theme.font.fontSize.body16};
+    font-weight: ${({ theme }) => theme.font.fontWeight.medium};
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  &.active,
+  &:hover {
     color: ${({ theme }) => theme.colors.red600};
   }
 `;

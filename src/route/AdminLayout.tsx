@@ -7,7 +7,7 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const { pathname } = useLocation();
 
   const currentMenu =
-    ADMIN_SIDE_BAR.find((menu) => {
+    ADMIN_SIDE_BAR.filter((menu) => !menu.isAction).find((menu) => {
       if (pathname.includes('/admin/settings') && menu.key === 'settings')
         return true;
       return pathname === menu.path;

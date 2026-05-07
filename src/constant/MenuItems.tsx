@@ -7,6 +7,7 @@ import Gragh from '@/assets/icons/GraghS.svg?react';
 import Warning from '@/assets/icons/WarningS.svg?react';
 import Fire from '@/assets/icons/FireS.svg?react';
 import Setting from '@/assets/icons/SettingS.svg?react';
+import Logout from '@/assets/icons/OutS.svg?react';
 
 export const USER_TABS = [
   {
@@ -86,5 +87,11 @@ export const ADMIN_SIDE_BAR = [
         label: '계정 관리',
       },
     ],
+  },
+  {
+    key: 'logout',
+    label: '로그아웃',
+    icon: <Logout />,
+    isAction: true,
   },
 ];
