@@ -153,4 +153,8 @@ const MenuWrapper = styled.div`
     font-size: ${({ theme }) => theme.font.fontSize.body16};
     font-weight: ${({ theme }) => theme.font.fontWeight.medium};
   }
+
+  svg {
+    color: ${({ theme }) => theme.colors.gray800};
+  }
 `;
