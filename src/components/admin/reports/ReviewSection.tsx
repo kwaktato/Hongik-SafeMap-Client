@@ -82,14 +82,14 @@ export const ReviewSection = ({ report }: ReviewSectionProps) => {
         <div className="buttons">
           <Button variant="white" onClick={() => handleUpdateStatus('승인')}>
             <Approve />
-            승인
+            <span>승인</span>
           </Button>
           <Button
             variant="white"
             onClick={() => handleUpdateStatus('블라인드')}
           >
             <Blind />
-            블라인드
+            <span>블라인드</span>
           </Button>
           {hasExistingReview && (
             <Button variant="black" onClick={handleCancelEdit}>

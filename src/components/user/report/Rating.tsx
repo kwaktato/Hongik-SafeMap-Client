@@ -66,14 +66,14 @@ export const Rating = ({ reportId, evaluation }: RatingProps) => {
             onClick={() => handleEvaluationClick('도움됨')}
           >
             <Helpful />
-            도움됨
+            <span>도움됨</span>
           </Button>
           <Button
             variant={evaluation?.userEvaluatedNotHelpful ? 'black' : 'white'}
             onClick={() => handleEvaluationClick('도움 안됨')}
           >
             <Useless />
-            도움 안됨
+            <span>도움 안됨</span>
           </Button>
         </div>
       </RatingSection>

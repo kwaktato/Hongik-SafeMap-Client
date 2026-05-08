@@ -66,7 +66,7 @@ export const ContentTermModal = ({
 
       <Button variant="white" style={{ flexShrink: '0' }} onClick={handleAdd}>
         <Plus />
-        새로운 조항 추가
+        <span>새로운 조항 추가</span>
       </Button>
 
       <Button

@@ -29,7 +29,7 @@ export const ContentGuideWarning = ({
         주의사항
         <Button variant="white" width="120px" onClick={handleAdd}>
           <Plus />
-          추가하기
+          <span>추가하기</span>
         </Button>
       </div>
 

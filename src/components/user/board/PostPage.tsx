@@ -198,7 +198,7 @@ export const PostPage = ({ statusOptions, post, comments }: PostCardProps) => {
             </div>
             <Button variant="white">
               <Pencil />
-              댓글 쓰기
+              <span>댓글 쓰기</span>
             </Button>
           </div>
         ) : (
