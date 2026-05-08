@@ -15,9 +15,7 @@ export const useDisasterIconUpload = () => {
     const uploadResult = await fetch(presignedUrl, {
       method: 'PUT',
       body: file,
-      headers: {
-        'Content-Type': file.type,
-      },
+      headers: { 'Content-Type': file.type },
     });
 
     if (!uploadResult.ok) {
@@ -27,13 +25,5 @@ export const useDisasterIconUpload = () => {
     return imageUrl;
   };
 
-  const uploadMultipleImages = async (files: File[]) => {
-    if (files.length === 0) return [];
-    return await Promise.all(files.map(uploadToS3));
-  };
-
-  return {
-    uploadToS3,
-    uploadMultipleImages,
-  };
+  return { uploadToS3 };
 };

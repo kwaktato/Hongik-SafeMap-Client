@@ -224,7 +224,7 @@ export const useAdminDisasterType = () => {
 /* 재난 유형별 행동 요령 조회 */
 export const useAdminSafetyTipsByDisasterType = (disasterTypeId: number) => {
   return useQuery<SafetyTipItem>({
-    queryKey: [],
+    queryKey: ['admin', 'safetyTips', disasterTypeId],
     queryFn: async () => {
       const response = await axiosInstance.get(
         `/admin/disaster-types/${disasterTypeId}/safety-tip`,

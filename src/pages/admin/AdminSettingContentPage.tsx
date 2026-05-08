@@ -3,8 +3,7 @@ import Warning from '@/assets/icons/Warning.svg?react';
 import Information from '@/assets/icons/Information.svg?react';
 import { SettingSection } from '@/components/admin/settings/SettingSection';
 import { ContentTerm } from '@/components/admin/settings/Content/Term/ContentTerm';
-// import { ContentSection } from '@/components/admin/settings/Content/Guide/ContentSection';
-import { ContentType } from '@/components/admin/settings/Content/Guide/ContentType';
+import { ContentSection } from '@/components/admin/settings/Content/Guide/ContentSection';
 
 export const AdminSettingContentPage = () => {
   return (
@@ -14,8 +13,7 @@ export const AdminSettingContentPage = () => {
         title="재난 유형 관리"
         description="앱에서 다루는 재난 유형 추가 및 수정"
       >
-        {/* <ContentSection /> */}
-        <ContentType />
+        <ContentSection />
       </SettingSection>
 
       <div className="border" />
