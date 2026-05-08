@@ -45,6 +45,7 @@ export const SuppliesSection = ({ supplies }: SuppliesSectionProps) => {
 
 const SectionWrapper = styled.div`
   margin: 20px 0px;
+  margin-top: 102px;
 
   display: flex;
   flex-direction: column;

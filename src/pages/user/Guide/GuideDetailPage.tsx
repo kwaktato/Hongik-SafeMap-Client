@@ -70,11 +70,11 @@ const Tabs = styled.div`
   background: ${({ theme }) => theme.colors.white};
 
   margin: 0 -20px;
-  // padding: 0px 20px;
-  // position: sticky;
-  // top: 56px;
-  // left: 0;
-  // right: 0;
+  padding: 0px 20px;
+  position: fixed;
+  top: 56px;
+  left: 0;
+  right: 0;
   z-index: 1;
 `;
 
