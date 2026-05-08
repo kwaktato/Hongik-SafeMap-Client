@@ -226,8 +226,8 @@ export const PostPage = ({ statusOptions, post, comments }: PostCardProps) => {
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           icon={<Send isActive={comment.length > 0} />}
-          bottom="16px"
-          right="18px"
+          iconBottom="16px"
+          iconRight="18px"
           onClick={handleCommentClick}
         />
       </Bottom>

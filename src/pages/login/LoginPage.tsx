@@ -112,7 +112,6 @@ const LoginWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  align-items: center;
 `;
 
 const SocialWrapper = styled.div`
