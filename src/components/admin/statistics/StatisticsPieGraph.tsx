@@ -13,7 +13,7 @@ export const StatisticsPieGraph = ({ data }: { data: any[] }) => {
             cy="50%" // 차트 중심 Y축
             outerRadius={80} // 차트 크기
             label={({ name, percent }) =>
-              `${name} ${(percent ?? 0 * 100).toFixed(0)}%`
+              `${name} ${((percent ?? 0) * 100).toFixed(0)}%`
             }
             isAnimationActive={true}
           >

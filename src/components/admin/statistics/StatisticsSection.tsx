@@ -66,8 +66,8 @@ export const StatisticsSection = ({
     const colorMap: Record<string, string> = {
       긴급: '#D4182E',
       높음: '#E57482',
-      보통: '#D1D3D8',
-      낮음: '#F3F4F5',
+      보통: '#B0B3BA',
+      낮음: '#EEEFF1',
     };
 
     return statistics.riskLevelDistribution.map((item) => ({
