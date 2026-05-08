@@ -241,7 +241,7 @@ const DateInput = styled.input<{ isSelected: boolean }>`
   font-weight: ${({ theme }) => theme.font.fontWeight.medium};
 
   &:focus {
-    border-color: ${({ theme }) => theme.colors.blue600};
+    border: 1px solid ${({ theme }) => theme.colors.gray600};
   }
 
   &::-webkit-calendar-picker-indicator {
