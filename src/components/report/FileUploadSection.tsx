@@ -72,19 +72,9 @@ export const FileUploadSection = ({
 
   return (
     <>
-      <Button
-        variant="white"
-        onClick={handlePhotoButtonClick}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '4px',
-          lineHeight: '23px',
-        }}
-      >
+      <Button variant="white" onClick={handlePhotoButtonClick}>
         <Camera />
-        파일 선택
+        <span>파일 선택</span>
       </Button>
 
       <input

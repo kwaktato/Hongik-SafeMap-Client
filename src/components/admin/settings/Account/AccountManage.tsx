@@ -23,7 +23,7 @@ export const AccountManage = () => {
 
       <Button variant="black" onClick={() => setIsAddModalOpen(true)}>
         <Plus />
-        관리자 계정 추가
+        <span>관리자 계정 추가</span>
       </Button>
 
       <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)}>

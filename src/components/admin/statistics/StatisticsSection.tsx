@@ -66,8 +66,8 @@ export const StatisticsSection = ({
     const colorMap: Record<string, string> = {
       긴급: '#D4182E',
       높음: '#E57482',
-      보통: '#D1D3D8',
-      낮음: '#F3F4F5',
+      보통: '#B0B3BA',
+      낮음: '#EEEFF1',
     };
 
     return statistics.riskLevelDistribution.map((item) => ({
@@ -241,7 +241,7 @@ const DateInput = styled.input<{ isSelected: boolean }>`
   font-weight: ${({ theme }) => theme.font.fontWeight.medium};
 
   &:focus {
-    border-color: ${({ theme }) => theme.colors.blue600};
+    border: 1px solid ${({ theme }) => theme.colors.gray600};
   }
 
   &::-webkit-calendar-picker-indicator {

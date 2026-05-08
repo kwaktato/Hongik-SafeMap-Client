@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import Plus from '@/assets/icons/PlusS.svg?react';
 import Delete from '@/assets/icons/TrashCan.svg?react';
 import { Button } from '@/components/common/Button';
+import { InputBox } from '@/components/common/InputBox';
 
 interface ContentGuideSupplyProps {
   supplies: string[];
@@ -29,14 +30,14 @@ export const ContentGuideSupply = ({
         필수 준비물
         <Button variant="white" width="120px" onClick={handleAdd}>
           <Plus />
-          추가하기
+          <span>추가하기</span>
         </Button>
       </div>
 
       <CardWrapper>
         {supplies.map((supply, index) => (
           <div className="input" key={index}>
-            <Input
+            <InputBox
               placeholder="예) 구급 약품"
               value={supply}
               onChange={(e) => handleChange(index, e.target.value)}
@@ -92,29 +93,5 @@ const CardWrapper = styled.div`
   svg {
     cursor: pointer;
     color: ${({ theme }) => theme.colors.red600};
-  }
-`;
-
-const Input = styled.input`
-  box-sizing: border-box;
-  width: 100%;
-  height: 44px;
-  padding: 10px 16px;
-  border-radius: 8px;
-  background: ${({ theme }) => theme.colors.gray300};
-
-  color: ${({ theme }) => theme.colors.gray1000};
-  font-size: ${({ theme }) => theme.font.fontSize.body16};
-  font-weight: ${({ theme }) => theme.font.fontWeight.medium};
-
-  &::placeholder {
-    color: ${({ theme }) => theme.colors.gray600};
-  }
-
-  &:hover,
-  &:focus {
-    outline: none;
-    caret-color: ${({ theme }) => theme.colors.gray800};
-    border: 1px solid ${({ theme }) => theme.colors.gray800};
   }
 `;

@@ -22,6 +22,7 @@ export const ActionSection = ({ guides }: ActionSectionProps) => {
 
 const SectionWrapper = styled.div`
   margin: 20px 0px;
+  margin-top: 102px;
 
   display: flex;
   flex-direction: column;
