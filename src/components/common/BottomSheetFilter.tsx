@@ -94,10 +94,12 @@ export const BottomSheetFilter = ({
                 {item.icon && item.icon}
                 {item.label}
               </div>
-              <CheckBox
-                checked={tempFilters[activeTab].includes(item.label)}
-                readOnly
-              />
+              <div style={{ pointerEvents: 'none' }}>
+                <CheckBox
+                  checked={tempFilters[activeTab].includes(item.label)}
+                  readOnly
+                />
+              </div>
             </OptionItem>
           ))}
         </Options>

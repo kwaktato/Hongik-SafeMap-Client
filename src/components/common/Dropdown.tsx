@@ -98,7 +98,9 @@ export const Dropdown = ({
                 isSelected={isSelected}
               >
                 {optionLabel}
-                <CheckBox checked={isSelected} readOnly />
+                <div style={{ pointerEvents: 'none' }}>
+                  <CheckBox checked={isSelected} readOnly />
+                </div>
               </DropdownOption>
             );
           })}
