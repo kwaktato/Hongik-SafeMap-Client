@@ -11,6 +11,7 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import { MaintenanceProvider } from '@/contexts/MaintenanceContext';
+import '@/settingFCM';
 
 const queryClient = new QueryClient({
   queryCache: new QueryCache({
