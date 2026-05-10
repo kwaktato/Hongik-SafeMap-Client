@@ -1,5 +1,6 @@
 import { styled } from 'styled-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { handleAllowNotification } from '@/firebase';
 import Logo from '@/assets/icons/Logo.svg?react';
 import Hide from '@/assets/icons/HideS.svg?react';
 import Show from '@/assets/icons/ShowS.svg?react';
@@ -17,6 +18,7 @@ export const LoginPage = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [fcmToken, setFcmToken] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   const toggleShowPassword = () => {
@@ -27,8 +29,9 @@ export const LoginPage = () => {
 
   const handleLoginClick = () => {
     const loginRequest: GeneralLoginRequest = {
-      email: email,
-      password: password,
+      email,
+      password,
+      fcmToken,
     };
     // console.log(loginRequest);
     login(loginRequest, {
@@ -47,6 +50,22 @@ export const LoginPage = () => {
       },
     });
   };
+
+  useEffect(() => {
+    const getNotificationToken = async () => {
+      try {
+        const notificationResult = await handleAllowNotification();
+
+        if (notificationResult === 'granted') {
+          setFcmToken(notificationResult);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    getNotificationToken();
+  }, []);
 
   return (
     <Container>
