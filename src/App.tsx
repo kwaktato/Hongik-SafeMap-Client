@@ -66,16 +66,20 @@ function App() {
   }
 
   return (
-    <Routes>
-      <Route path="/" element={<SplashPage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/signup" element={<SignupPage />} />
+    <>
+      <Routes>
+        <Route path="/" element={<SplashPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
 
-      <Route path="/maintenance" element={<MaintenancePage />} />
+        <Route path="/maintenance" element={<MaintenancePage />} />
 
-      <Route path="/user/*" element={<UserRoute />} />
+        <Route path="/user/*" element={<UserRoute />} />
 
-      <Route path="/admin/*" element={<AdminRoute />} />
+        <Route path="/admin/*" element={<AdminRoute />} />
+
+        <Route path="*" element={<ErrorPage />} />
+      </Routes>
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <ModalNotification onClose={() => setIsModalOpen(false)} />
@@ -84,9 +88,7 @@ function App() {
       <Modal isOpen={showGuide} onClose={() => setShowGuide(false)}>
         <ModalInstall onClose={() => setShowGuide(false)} />
       </Modal>
-
-      <Route path="*" element={<ErrorPage />} />
-    </Routes>
+    </>
   );
 }
 
