@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Bookmark from '@/assets/icons/BookmarkDisactiveS.svg?react';
 import { useSafetyTipSummary } from '@/api/safetyTips';
 import { TitleHeader } from '@/components/common/TitleHeader';
@@ -9,7 +9,10 @@ import { Tag } from '@/components/common/Tag';
 
 export const GuidePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [favorites, setFavorites] = useState<string[]>([]);
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    const saved = localStorage.getItem('safety_favorites');
+    return saved ? JSON.parse(saved) : [];
+  });
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
   const { data } = useSafetyTipSummary();
@@ -20,6 +23,20 @@ export const GuidePage = () => {
       prev.includes(id) ? prev.filter((fav) => fav !== id) : [...prev, id],
     );
   };
+
+  useEffect(() => {
+    const saved = localStorage.getItem('safety_favorites');
+
+    if (saved) {
+      setFavorites(JSON.parse(saved));
+    } else {
+      setFavorites([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('safety_favorites', JSON.stringify(favorites));
+  }, [favorites]);
 
   const filteredGuides = useMemo(() => {
     let guides = data;
