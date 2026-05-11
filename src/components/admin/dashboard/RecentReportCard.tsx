@@ -24,7 +24,7 @@ export const RecentReportCard = ({ report }: RecentReportCardProps) => {
           {report.disasterType.name}
         </Tag>
 
-        {(report.status === '승인' || report.status === '검증됨') && (
+        {report.status === '검증됨' && (
           <Tag variant="blue" iconTag={true}>
             <Check />
             검증됨
@@ -35,6 +35,13 @@ export const RecentReportCard = ({ report }: RecentReportCardProps) => {
           <Tag variant="red" iconTag={true}>
             <False />
             AI 신뢰도 의심
+          </Tag>
+        )}
+
+        {report.status === '승인' && (
+          <Tag variant="blue" iconTag={true}>
+            <Check />
+            승인
           </Tag>
         )}
       </div>

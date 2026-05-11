@@ -18,17 +18,10 @@ export const ReportSection = ({ report }: ReportSectionProps) => {
         <div className="tags">
           <Tag variant="black">{report.disasterType.name}</Tag>
 
-          {(report.status === '승인' || report.status === '검증됨') && (
+          {report.status === '검증됨' && (
             <Tag variant="blue" iconTag={true}>
               <CheckIcon />
               검증됨
-            </Tag>
-          )}
-
-          {report.status === '블라인드' && (
-            <Tag variant="gray" iconTag={true}>
-              <FalseIcon />
-              블라인드
             </Tag>
           )}
 
@@ -36,6 +29,20 @@ export const ReportSection = ({ report }: ReportSectionProps) => {
             <Tag variant="red" iconTag={true}>
               <FalseIcon />
               AI 신뢰도 의심
+            </Tag>
+          )}
+
+          {report.status === '승인' && (
+            <Tag variant="blue" iconTag={true}>
+              <CheckIcon />
+              승인
+            </Tag>
+          )}
+
+          {report.status === '블라인드' && (
+            <Tag variant="gray" iconTag={true}>
+              <FalseIcon />
+              블라인드
             </Tag>
           )}
         </div>
