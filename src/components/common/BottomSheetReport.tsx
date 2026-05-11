@@ -184,6 +184,7 @@ const Border = styled.div`
 
 const ReportsWrapper = styled.div`
   padding: 16px 0px;
+  padding-bottom: 72px;
   display: flex;
   flex-direction: column;
 `;
