@@ -143,7 +143,7 @@ export const ResourceBoardPage = () => {
 };
 
 const Container = styled.div`
-  margin: 72px 20px;
+  padding: 72px 20px;
 
   display: flex;
   flex-direction: column;
