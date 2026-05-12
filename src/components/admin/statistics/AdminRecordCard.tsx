@@ -69,6 +69,14 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
 
   if (!addressData) return <Container>주소 로딩 중...</Container>;
 
+  const disasterTitle = record.title
+    ? record.title
+    : formatRecordTitle(
+        addressData,
+        record.latestRiskLevel,
+        record.disasterType.name,
+      );
+
   return (
     <Container>
       <RecordWrapper>
@@ -77,15 +85,7 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
             <div className="date">
               {formatYearMonth(record.earliestReportTime)}
             </div>
-            <div className="disaster">
-              {record.title
-                ? record.title
-                : formatRecordTitle(
-                    addressData,
-                    record.latestRiskLevel,
-                    record.disasterType.name,
-                  )}
-            </div>
+            <div className="disaster">{disasterTitle}</div>
           </div>
           <div className="row4">
             <Tag variant="black">{record.disasterType.name}</Tag>
@@ -175,15 +175,7 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
         <ModalSimulation
           onClose={() => setShowSimulation(false)}
           reportId={record.id}
-          title={
-            record.title
-              ? record.title
-              : formatRecordTitle(
-                  addressData,
-                  record.latestRiskLevel,
-                  record.disasterType.name,
-                )
-          }
+          title={disasterTitle}
           date={formatSummaryDate(
             record.earliestReportTime,
             record.latestReportTime,
