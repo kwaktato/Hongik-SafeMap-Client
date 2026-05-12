@@ -35,11 +35,11 @@ export const ResourceBoardPage = () => {
     category:
       appliedFilters.category[0] === '전체'
         ? undefined
-        : (appliedFilters.category[0] as ResourceCategory),
+        : (appliedFilters.category as ResourceCategory[]),
     status:
       appliedFilters.status[0] === '전체'
         ? undefined
-        : (appliedFilters.status[0] as ResourceStatus),
+        : (appliedFilters.status as ResourceStatus[]),
     type:
       appliedFilters.type[0] === '전체'
         ? undefined
@@ -95,9 +95,14 @@ export const ResourceBoardPage = () => {
 
       <FilterWrapper>
         {Object.entries(RESOURCE_BOARD_FILTER).map(([key, value]) => {
-          const selectedValue = appliedFilters[key as keyof FilterState][0];
-          const displayLabel =
-            selectedValue === '전체' ? value.tabLabel : selectedValue;
+          const selectedValues = appliedFilters[key as keyof FilterState];
+          let displayLabel = value.tabLabel;
+          if (!selectedValues.includes('전체')) {
+            displayLabel =
+              selectedValues.length > 1
+                ? `${selectedValues[0]} 외 ${selectedValues.length - 1}`
+                : selectedValues[0];
+          }
 
           return (
             <Filter key={key} onClick={() => handleOpenFilter(key)}>
@@ -143,7 +148,7 @@ export const ResourceBoardPage = () => {
 };
 
 const Container = styled.div`
-  margin: 72px 20px;
+  padding: 72px 20px;
 
   display: flex;
   flex-direction: column;

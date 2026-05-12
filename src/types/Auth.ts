@@ -19,11 +19,13 @@ export interface SignupResponse {
 export interface GeneralLoginRequest {
   email: string;
   password: string;
+  fcmToken: string;
 }
 
 export interface SNSLoginRequest {
   token: string;
   loginType: LoginType;
+  fcmToken: string;
 }
 
 export interface ReissueRequest {

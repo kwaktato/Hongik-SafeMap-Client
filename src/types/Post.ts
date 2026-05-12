@@ -41,15 +41,15 @@ export type MissingListResponse = ReportPageResponse<MissingPost>;
 export type ResourceListResponse = ReportPageResponse<ResourcePost>;
 
 export interface MissingParams {
-  category?: MissingCategory;
-  status?: MissingStatus;
+  category?: MissingCategory[];
+  status?: MissingStatus[];
   page: number;
   size: number;
 }
 
 export interface ResourceParams {
-  category?: ResourceCategory;
-  status?: ResourceStatus;
+  category?: ResourceCategory[];
+  status?: ResourceStatus[];
   type?: ResourceType;
   page: number;
   size: number;

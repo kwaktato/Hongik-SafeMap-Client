@@ -13,6 +13,7 @@ interface BottomSheetFilterProps {
   initialValue: FilterState;
   defaultTab: string;
   onApply: (val: FilterState) => void;
+  buttonBottom?: string;
 }
 
 export const BottomSheetFilter = ({
@@ -23,6 +24,7 @@ export const BottomSheetFilter = ({
   initialValue,
   defaultTab,
   onApply,
+  buttonBottom = '0',
 }: BottomSheetFilterProps) => {
   if (!isOpen) return null;
 
@@ -104,7 +106,7 @@ export const BottomSheetFilter = ({
           ))}
         </Options>
 
-        <Buttons>
+        <Buttons bottom={buttonBottom}>
           <Button variant="white" onClick={handleReset}>
             <Reset />
             <span>전체 초기화</span>
@@ -226,14 +228,14 @@ const OptionItem = styled.div<{ isSelected: boolean; isAll: boolean }>`
   }
 `;
 
-const Buttons = styled.div`
+const Buttons = styled.div<{ bottom: string }>`
   padding: 20px;
   display: flex;
   gap: 6px;
   background: ${({ theme }) => theme.colors.white};
 
   position: absolute;
-  bottom: 0;
+  bottom: ${({ bottom }) => bottom};
   left: 0;
   right: 0;
 `;
