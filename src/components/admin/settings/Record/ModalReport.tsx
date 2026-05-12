@@ -9,7 +9,7 @@ import { Tag, type TagColor } from '@/components/common/Tag';
 import type { DisasterGroupDetail } from '@/types/Report';
 import { formatDateTime, formatSimpleDate } from '@/utils/formatDate';
 import { formatAddress, type KakaoAddressResult } from '@/utils/formatAddress';
-import { Button } from './Button';
+import { Button } from '../../../common/Button';
 
 interface ModalReportProps {
   onClose: () => void;
