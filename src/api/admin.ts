@@ -16,7 +16,7 @@ import type {
   AdminStatisticsResponse,
   DisasterStatisticsParams,
 } from '@/types/Admin';
-import type { ReportDetailResponse } from '@/types/Report';
+import type { DisasterGroupDetail, ReportDetailResponse } from '@/types/Report';
 import type { DisasterTypeRequest, SafetyTipItem } from '@/types/SafetyTips';
 import type { DisasterType } from '@/types/common';
 
@@ -133,6 +133,19 @@ export const useAdminDisasterRecords = (params: DisasterRecordsParams) => {
       const response = await axiosInstance.get(
         '/admin/disaster-archive/disaster-records',
         { params },
+      );
+      return response.data;
+    },
+  });
+};
+
+/* 재난 제보 그룹 상세 조회 */
+export const useAdminReportGroupDetail = (groupId: number) => {
+  return useQuery<DisasterGroupDetail>({
+    queryKey: [],
+    queryFn: async () => {
+      const response = await axiosInstance.get(
+        `/admin/disaster-archive/disaster-records/${groupId}`,
       );
       return response.data;
     },
