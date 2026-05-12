@@ -33,11 +33,11 @@ export const MissingBoardPage = () => {
     category:
       appliedFilters.category[0] === '전체'
         ? undefined
-        : (appliedFilters.category[0] as MissingCategory),
+        : (appliedFilters.category as MissingCategory[]),
     status:
       appliedFilters.status[0] === '전체'
         ? undefined
-        : (appliedFilters.status[0] as MissingStatus),
+        : (appliedFilters.status as MissingStatus[]),
     page: 0,
     size: 10,
   };
@@ -88,9 +88,14 @@ export const MissingBoardPage = () => {
 
       <FilterWrapper>
         {Object.entries(MISSING_BOARD_FILTER).map(([key, value]) => {
-          const selectedValue = appliedFilters[key as keyof FilterState][0];
-          const displayLabel =
-            selectedValue === '전체' ? value.tabLabel : selectedValue;
+          const selectedValues = appliedFilters[key as keyof FilterState];
+          let displayLabel = value.tabLabel;
+          if (!selectedValues.includes('전체')) {
+            displayLabel =
+              selectedValues.length > 1
+                ? `${selectedValues[0]} 외 ${selectedValues.length - 1}`
+                : selectedValues[0];
+          }
 
           return (
             <Filter key={key} onClick={() => handleOpenFilter(key)}>
