@@ -6,6 +6,8 @@ import Calender from '@/assets/icons/CalenderXS.svg?react';
 import Map from '@/assets/icons/MapS.svg?react';
 import Play from '@/assets/icons/PlayS.svg?react';
 import Information from '@/assets/icons/InformationS.svg?react';
+import Save from '@/assets/icons/DownloadS.svg?react';
+import Edit from '@/assets/icons/WriteS.svg?react';
 import { Button } from '@/components/common/Button';
 import { Modal } from '@/components/common/Modal';
 import { ModalSimulation } from '@/components/admin/settings/Record/ModalSimulation';
@@ -26,6 +28,8 @@ import {
   getOfficialAddress,
   type KakaoAddressResult,
 } from '@/utils/formatAddress';
+import { useUpdateDisasterTitle } from '@/api/admin';
+import { InputBox } from '@/components/common/InputBox';
 
 interface AdminRecordCardProps {
   record: DisasterRecord;
@@ -40,6 +44,23 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
   const [showLocation, setShowLocation] = useState(false);
   const [showSimulation, setShowSimulation] = useState(false);
   const [showGroupReport, setShowGroupReport] = useState(false);
+
+  const [selectedRecordId, setSelectedRecordId] = useState<number | null>(null);
+  const [newTitle, setNewTitle] = useState(record.title);
+
+  const { mutate: updateTitle } = useUpdateDisasterTitle(selectedRecordId ?? 0);
+
+  const handleEditClick = (id: number, currentTitle: string) => {
+    setSelectedRecordId(id);
+    setNewTitle(currentTitle);
+  };
+
+  const handleSaveClick = () => {
+    if (!selectedRecordId) return;
+    updateTitle(newTitle, {
+      onSuccess: () => setSelectedRecordId(null),
+    });
+  };
 
   const getTagVariant = (level?: RiskLevel) => {
     switch (level) {
@@ -84,7 +105,40 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
             <div className="date">
               {formatYearMonth(record.earliestReportTime)}
             </div>
-            <div className="disaster">{disasterTitle}</div>
+            {selectedRecordId === record.id ? (
+              <div className="row4">
+                <InputBox
+                  placeholder="재난 기록의 제목을 입력하세요"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  autoFocus
+                />
+                <Button variant="white" width="48px" onClick={handleSaveClick}>
+                  저장
+                </Button>
+                <Button
+                  variant="white"
+                  width="48px"
+                  onClick={() => setSelectedRecordId(null)}
+                >
+                  취소
+                </Button>
+              </div>
+            ) : (
+              <div className="disaster">
+                {disasterTitle}
+                {showDetail && (
+                  <Button
+                    variant="white"
+                    width="32px"
+                    height="32px"
+                    onClick={() => handleEditClick(record.id, disasterTitle)}
+                  >
+                    <Edit />
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
           <div className="row4">
             <Tag variant="black">{record.disasterType.name}</Tag>
@@ -210,6 +264,12 @@ const Container = styled.div`
 
   display: flex;
   flex-direction: column;
+
+  .top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
 `;
 
 const RecordWrapper = styled.div`
@@ -232,6 +292,9 @@ const RecordWrapper = styled.div`
   }
 
   .disaster {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     color: ${({ theme }) => theme.colors.gray1000};
     font-size: ${({ theme }) => theme.font.fontSize.title20};
     font-weight: ${({ theme }) => theme.font.fontWeight.bold};

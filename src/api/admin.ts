@@ -130,7 +130,7 @@ export const useAdminDisasterStatistics = (
 /* 재난 기록 전체 조회 */
 export const useAdminDisasterRecords = (params: DisasterRecordsParams) => {
   return useQuery<AdminRecordsResponse>({
-    queryKey: ['admin', 'records', params],
+    queryKey: ['admin', 'archive', 'records', params],
     queryFn: async () => {
       const response = await axiosInstance.get(
         '/admin/disaster-archive/disaster-records',
@@ -141,10 +141,28 @@ export const useAdminDisasterRecords = (params: DisasterRecordsParams) => {
   });
 };
 
+/* 재난 제보 그룹 제목 등록/수정 */
+export const useUpdateDisasterTitle = (groupId: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (title: string) => {
+      const response = await axiosInstance.patch(
+        `/admin/disaster-archive/disaster-records/${groupId}/title`,
+        { title },
+      );
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'archive'] });
+    },
+  });
+};
+
 /* 재난 제보 그룹 상세 조회 */
 export const useAdminReportGroupDetail = (groupId: number) => {
   return useQuery<DisasterGroupDetail>({
-    queryKey: [],
+    queryKey: ['admin', 'archive', 'detail', groupId],
     queryFn: async () => {
       const response = await axiosInstance.get(
         `/admin/disaster-archive/disaster-records/${groupId}`,
@@ -157,7 +175,7 @@ export const useAdminReportGroupDetail = (groupId: number) => {
 /* 재난 시뮬레이션 조회 */
 export const useAdminReportSimulation = (groupId: number) => {
   return useQuery<AdminSimulationResponse>({
-    queryKey: [],
+    queryKey: ['admin', 'archive', 'simulation', groupId],
     queryFn: async () => {
       const response = await axiosInstance.get(
         `/admin/disaster-archive/disaster-records/${groupId}/simulation`,
@@ -170,7 +188,7 @@ export const useAdminReportSimulation = (groupId: number) => {
 /* 재난 기록 위치 조회 */
 export const useAdminReportLocations = (groupId: number) => {
   return useQuery<AdminLocationResponse>({
-    queryKey: [],
+    queryKey: ['admin', 'archive', 'locations', groupId],
     queryFn: async () => {
       const response = await axiosInstance.get(
         `/admin/disaster-archive/disaster-records/${groupId}/locations`,
