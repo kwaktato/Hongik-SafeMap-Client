@@ -151,7 +151,6 @@ const SheetContainer = styled.div`
   border-radius: 20px 20px 0 0;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
   overflow-y: auto;
-
   display: flex;
   flex-direction: column;
 `;
@@ -212,6 +211,7 @@ const Border = styled.div`
 
 const ReportsWrapper = styled.div`
   padding: 16px 0px;
+  padding-bottom: 72px;
   display: flex;
   flex-direction: column;
 `;
