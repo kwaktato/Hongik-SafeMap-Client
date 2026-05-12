@@ -4,10 +4,12 @@ import ChevronUp from '@/assets/icons/ChevronUp.svg?react';
 import ChevronDown from '@/assets/icons/ChevronDown.svg?react';
 import Calender from '@/assets/icons/CalenderXS.svg?react';
 // import Map from '@/assets/icons/MapS.svg?react';
-// import Play from '@/assets/icons/PlayS.svg?react';
+import Play from '@/assets/icons/PlayS.svg?react';
 import Information from '@/assets/icons/InformationS.svg?react';
-import { Button } from '@/components/common/Button';
 import { useAdminReportGroupDetail } from '@/api/admin';
+import { Button } from '@/components/common/Button';
+import { Modal } from '@/components/common/Modal';
+import { ModalReport } from '@/components/admin/settings/Record/ModalReport';
 import { Tag, type TagColor } from '@/components/common/Tag';
 import { RecordGraph } from '@/components/admin/statistics/RecordGraph';
 import type { RiskLevel } from '@/types/common';
@@ -23,8 +25,7 @@ import {
   getOfficialAddress,
   type KakaoAddressResult,
 } from '@/utils/formatAddress';
-import { Modal } from '@/components/common/Modal';
-import { ModalReport } from '@/components/common/ModalReport';
+import { ModalSimulation } from '../settings/Record/ModalSimulation';
 
 interface AdminRecordCardProps {
   record: DisasterRecord;
@@ -38,6 +39,8 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
 
   const [showGroupReport, setShowGroupReport] = useState(false);
   const { data: groupReport } = useAdminReportGroupDetail(record.id);
+
+  const [showSimulation, setShowSimulation] = useState(false);
 
   const getTagVariant = (level?: RiskLevel) => {
     switch (level) {
@@ -75,11 +78,13 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
               {formatYearMonth(record.earliestReportTime)}
             </div>
             <div className="disaster">
-              {formatRecordTitle(
-                addressData,
-                record.latestRiskLevel,
-                record.disasterType.name,
-              )}
+              {record.title
+                ? record.title
+                : formatRecordTitle(
+                    addressData,
+                    record.latestRiskLevel,
+                    record.disasterType.name,
+                  )}
             </div>
           </div>
           <div className="row4">
@@ -145,11 +150,11 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
               {/*<Button variant="white">
                 <Map />
                 지도에서 보기
-              </Button>
-              <Button variant="white">
+              </Button>*/}
+              <Button variant="white" onClick={() => setShowSimulation(true)}>
                 <Play />
                 시뮬레이션
-              </Button>*/}
+              </Button>
               <Button variant="white" onClick={() => setShowGroupReport(true)}>
                 <Information />
                 상세 제보 확인하기
@@ -165,6 +170,26 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
         <div>상세보기</div>
         {showDetail ? <ChevronUp /> : <ChevronDown />}
       </ToggleWrapper>
+
+      <Modal isOpen={showSimulation} onClose={() => setShowSimulation(false)}>
+        <ModalSimulation
+          onClose={() => setShowSimulation(false)}
+          reportId={record.id}
+          title={
+            record.title
+              ? record.title
+              : formatRecordTitle(
+                  addressData,
+                  record.latestRiskLevel,
+                  record.disasterType.name,
+                )
+          }
+          date={formatSummaryDate(
+            record.earliestReportTime,
+            record.latestReportTime,
+          )}
+        />
+      </Modal>
 
       <Modal isOpen={showGroupReport} onClose={() => setShowGroupReport(false)}>
         <ModalReport

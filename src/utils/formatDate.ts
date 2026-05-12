@@ -127,7 +127,7 @@ export const formatSummaryDate = (startStr: string, endStr: string) => {
   }
 
   if (isSameMonth) {
-    return `${monthDay(start)} - ${monthDay(end)}`;
+    return `${yearMonthDay(start)} - ${monthDay(end)}`;
   }
 
   return `${yearMonthDay(start)} - ${yearMonthDay(end)}`;

@@ -105,6 +105,56 @@ export interface AdminStatisticsResponse {
   riskLevelDistribution: RiskLevelDistribution[];
 }
 
+interface Summary {
+  disasterType: DisasterType;
+  totalReportCount: number;
+  startTime: string;
+  endTime: string;
+}
+
+interface SimulationLocation {
+  latitude: number;
+  longitude: number;
+  riskLevel: string;
+}
+
+interface RiskLevelCounts {
+  긴급: number;
+  높음: number;
+  보통: number;
+  낮음: number;
+}
+
+interface Statistics {
+  reportTime: string;
+  cumulativeCount: number;
+  riskLevelCounts: RiskLevelCounts;
+}
+
+interface SimulationFrame {
+  reportIndex: number;
+  locations: SimulationLocation[];
+  statistics: Statistics;
+}
+
+/* [get] /admin/disaster-archive/disaster-records/${groupId}/simulation */
+export interface AdminSimulationResponse {
+  summary: Summary;
+  frames: SimulationFrame[];
+}
+
+interface ReportLocations extends SimulationLocation {
+  reportId: number;
+}
+
+/* [get] /admin/disaster-archive/disaster-records/${groupId}/locations */
+export interface AdminLocationResponse extends Omit<DisasterGroup, 'id'> {
+  groupId: number;
+  isActive: boolean;
+  earliestAddress: string;
+  reportLocations: ReportLocations[];
+}
+
 // ===================== 관리자 계정 관리 =====================
 /* [get] /admin/accounts */
 export interface AdminAccountsResponse {

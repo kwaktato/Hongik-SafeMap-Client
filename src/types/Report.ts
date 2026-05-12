@@ -30,6 +30,7 @@ export interface DisasterGroupParams {
 /* 재난 제보 클러스터 조회: [get] /disaster-reports/grouped */
 export interface DisasterGroup {
   id: number;
+  title: string;
   disasterType: DisasterType;
   centerLatitude: number;
   centerLongitude: number;

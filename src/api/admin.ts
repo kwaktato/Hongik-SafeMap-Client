@@ -15,6 +15,8 @@ import type {
   DisasterRecordsParams,
   AdminStatisticsResponse,
   DisasterStatisticsParams,
+  AdminSimulationResponse,
+  AdminLocationResponse,
 } from '@/types/Admin';
 import type { DisasterGroupDetail, ReportDetailResponse } from '@/types/Report';
 import type { DisasterTypeRequest, SafetyTipItem } from '@/types/SafetyTips';
@@ -146,6 +148,32 @@ export const useAdminReportGroupDetail = (groupId: number) => {
     queryFn: async () => {
       const response = await axiosInstance.get(
         `/admin/disaster-archive/disaster-records/${groupId}`,
+      );
+      return response.data;
+    },
+  });
+};
+
+/* 재난 시뮬레이션 조회 */
+export const useAdminReportSimulation = (groupId: number) => {
+  return useQuery<AdminSimulationResponse>({
+    queryKey: [],
+    queryFn: async () => {
+      const response = await axiosInstance.get(
+        `/admin/disaster-archive/disaster-records/${groupId}/simulation`,
+      );
+      return response.data;
+    },
+  });
+};
+
+/* 재난 기록 위치 조회 */
+export const useAdminReportLocations = (groupId: number) => {
+  return useQuery<AdminLocationResponse>({
+    queryKey: [],
+    queryFn: async () => {
+      const response = await axiosInstance.get(
+        `/admin/disaster-archive/disaster-records/${groupId}/locations`,
       );
       return response.data;
     },
