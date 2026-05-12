@@ -90,7 +90,7 @@ export const StatisticsSection = ({
     try {
       const element = statsRef.current;
 
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
 
       const originalPadding = element.style.padding;
       element.style.padding = '40px';
