@@ -6,10 +6,10 @@ import Type from '@/assets/icons/NotificationXS.svg?react';
 import CheckIcon from '@/assets/icons/ExactXS.svg?react';
 import FalseIcon from '@/assets/icons/FalseXS.svg?react';
 import { Tag, type TagColor } from '@/components/common/Tag';
+import { Button } from '@/components/common/Button';
 import type { DisasterGroupDetail } from '@/types/Report';
 import { formatDateTime, formatSimpleDate } from '@/utils/formatDate';
 import { formatAddress, type KakaoAddressResult } from '@/utils/formatAddress';
-import { Button } from '../../../common/Button';
 
 interface ModalReportProps {
   onClose: () => void;
