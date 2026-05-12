@@ -59,7 +59,6 @@ const TrustSection = styled.div`
 const WarningWrapper = styled.div`
   padding: 8px 16px 8px 12px;
   display: flex;
-  // align-items: center;
   gap: 4px;
   background: ${({ theme }) => theme.colors.red100};
   border-radius: 8px;

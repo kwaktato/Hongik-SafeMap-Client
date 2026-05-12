@@ -3,10 +3,16 @@ import { useEffect, useState } from 'react';
 import ChevronUp from '@/assets/icons/ChevronUp.svg?react';
 import ChevronDown from '@/assets/icons/ChevronDown.svg?react';
 import Calender from '@/assets/icons/CalenderXS.svg?react';
-// import Map from '@/assets/icons/MapS.svg?react';
-// import Play from '@/assets/icons/PlayS.svg?react';
-// import Information from '@/assets/icons/InformationS.svg?react';
-// import { Button } from '@/components/common/Button';
+import Map from '@/assets/icons/MapS.svg?react';
+import Play from '@/assets/icons/PlayS.svg?react';
+import Information from '@/assets/icons/InformationS.svg?react';
+import Save from '@/assets/icons/DownloadS.svg?react';
+import Edit from '@/assets/icons/WriteS.svg?react';
+import { Button } from '@/components/common/Button';
+import { Modal } from '@/components/common/Modal';
+import { ModalSimulation } from '@/components/admin/settings/Record/ModalSimulation';
+import { ModalLocation } from '@/components/admin/settings/Record/ModalLocation';
+import { ModalReport } from '@/components/admin/settings/Record/ModalReport';
 import { Tag, type TagColor } from '@/components/common/Tag';
 import { RecordGraph } from '@/components/admin/statistics/RecordGraph';
 import type { RiskLevel } from '@/types/common';
@@ -22,6 +28,8 @@ import {
   getOfficialAddress,
   type KakaoAddressResult,
 } from '@/utils/formatAddress';
+import { useUpdateDisasterTitle } from '@/api/admin';
+import { InputBox } from '@/components/common/InputBox';
 
 interface AdminRecordCardProps {
   record: DisasterRecord;
@@ -32,6 +40,27 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
   const [addressData, setAddressData] = useState<KakaoAddressResult | null>(
     null,
   );
+
+  const [showLocation, setShowLocation] = useState(false);
+  const [showSimulation, setShowSimulation] = useState(false);
+  const [showGroupReport, setShowGroupReport] = useState(false);
+
+  const [selectedRecordId, setSelectedRecordId] = useState<number | null>(null);
+  const [newTitle, setNewTitle] = useState(record.title);
+
+  const { mutate: updateTitle } = useUpdateDisasterTitle(selectedRecordId ?? 0);
+
+  const handleEditClick = (id: number, currentTitle: string) => {
+    setSelectedRecordId(id);
+    setNewTitle(currentTitle);
+  };
+
+  const handleSaveClick = () => {
+    if (!selectedRecordId) return;
+    updateTitle(newTitle, {
+      onSuccess: () => setSelectedRecordId(null),
+    });
+  };
 
   const getTagVariant = (level?: RiskLevel) => {
     switch (level) {
@@ -60,6 +89,14 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
 
   if (!addressData) return <Container>주소 로딩 중...</Container>;
 
+  const disasterTitle = record.title
+    ? record.title
+    : formatRecordTitle(
+        addressData,
+        record.latestRiskLevel,
+        record.disasterType.name,
+      );
+
   return (
     <Container>
       <RecordWrapper>
@@ -68,13 +105,40 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
             <div className="date">
               {formatYearMonth(record.earliestReportTime)}
             </div>
-            <div className="disaster">
-              {formatRecordTitle(
-                addressData,
-                record.latestRiskLevel,
-                record.disasterType.name,
-              )}
-            </div>
+            {selectedRecordId === record.id ? (
+              <div className="row4">
+                <InputBox
+                  placeholder="재난 기록의 제목을 입력하세요"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  autoFocus
+                />
+                <Button variant="white" width="48px" onClick={handleSaveClick}>
+                  저장
+                </Button>
+                <Button
+                  variant="white"
+                  width="48px"
+                  onClick={() => setSelectedRecordId(null)}
+                >
+                  취소
+                </Button>
+              </div>
+            ) : (
+              <div className="disaster">
+                {disasterTitle}
+                {showDetail && (
+                  <Button
+                    variant="white"
+                    width="32px"
+                    height="32px"
+                    onClick={() => handleEditClick(record.id, disasterTitle)}
+                  >
+                    <Edit />
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
           <div className="row4">
             <Tag variant="black">{record.disasterType.name}</Tag>
@@ -112,10 +176,6 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
                   <span>
                     {formatDateTime(record.earliestReportTime)}
                     <br />~ {formatDateTime(record.latestReportTime)}
-                    {/* {formatDateDuration(
-                      record.earliestReportTime,
-                      record.latestReportTime,
-                    )} */}
                   </span>
                 </div>
                 <div className="detail">
@@ -136,29 +196,23 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
                   pending={record.pendingReportCount}
                   // suspicious={record.}
                 />
-                <div className="detail">
-                  {/* 검증된 제보<span>127건</span> */}
-                </div>
-                <div className="detail">
-                  {/* 검증 안된 제보<span>127건</span> */}
-                </div>
               </div>
             </div>
 
-            {/* <div className="rows">
-              <Button variant="white">
+            <div className="rows">
+              <Button variant="white" onClick={() => setShowLocation(true)}>
                 <Map />
                 지도에서 보기
               </Button>
-              <Button variant="white">
+              <Button variant="white" onClick={() => setShowSimulation(true)}>
                 <Play />
                 시뮬레이션
               </Button>
-              <Button variant="white">
+              <Button variant="white" onClick={() => setShowGroupReport(true)}>
                 <Information />
-                상세 제보 확인하기
+                제보 상세보기
               </Button>
-            </div> */}
+            </div>
           </DetailWrapper>
         )}
       </RecordWrapper>
@@ -169,6 +223,36 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
         <div>상세보기</div>
         {showDetail ? <ChevronUp /> : <ChevronDown />}
       </ToggleWrapper>
+
+      <Modal isOpen={showLocation} onClose={() => setShowLocation(false)}>
+        <ModalLocation
+          onClose={() => setShowLocation(false)}
+          groupId={record.id}
+          disasterTitle={disasterTitle}
+          address={formatAddress(addressData, true)}
+        />
+      </Modal>
+
+      <Modal isOpen={showSimulation} onClose={() => setShowSimulation(false)}>
+        <ModalSimulation
+          onClose={() => setShowSimulation(false)}
+          reportId={record.id}
+          title={disasterTitle}
+          date={formatSummaryDate(
+            record.earliestReportTime,
+            record.latestReportTime,
+          )}
+        />
+      </Modal>
+
+      <Modal isOpen={showGroupReport} onClose={() => setShowGroupReport(false)}>
+        <ModalReport
+          onClose={() => setShowGroupReport(false)}
+          disasterTitle={disasterTitle}
+          addressData={addressData}
+          groupId={record.id}
+        />
+      </Modal>
     </Container>
   );
 };
@@ -180,6 +264,12 @@ const Container = styled.div`
 
   display: flex;
   flex-direction: column;
+
+  .top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
 `;
 
 const RecordWrapper = styled.div`
@@ -202,6 +292,9 @@ const RecordWrapper = styled.div`
   }
 
   .disaster {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     color: ${({ theme }) => theme.colors.gray1000};
     font-size: ${({ theme }) => theme.font.fontSize.title20};
     font-weight: ${({ theme }) => theme.font.fontWeight.bold};

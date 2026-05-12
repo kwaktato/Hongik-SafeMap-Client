@@ -181,7 +181,6 @@ const Reset = styled.div`
 const PostWrapper = styled.div`
   display: grid;
   gap: 8px;
-  // align-items: start;
 
   grid-template-columns: repeat(1, 1fr);
 

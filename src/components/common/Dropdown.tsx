@@ -140,7 +140,6 @@ const DropdownHeader = styled.div<{ isSelected: boolean }>`
 
 const DropdownOptionWrapper = styled.div`
   width: 100%;
-  // max-height: 160px;
   display: flex;
   flex-direction: column;
   background: ${({ theme }) => theme.colors.white};

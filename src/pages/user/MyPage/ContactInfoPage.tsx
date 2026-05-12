@@ -61,27 +61,6 @@ export const ContactInfoPage = () => {
     });
   };
 
-  // const dummyEmergencyContacts: EmergencyContactResponse[] = [
-  //   {
-  //     emergencyContactId: 1,
-  //     name: '김철수',
-  //     relationship: '형',
-  //     phone: '010-1234-5678',
-  //   },
-  //   {
-  //     emergencyContactId: 2,
-  //     name: '이지은',
-  //     relationship: '친구',
-  //     phone: '010-9876-5432',
-  //   },
-  //   {
-  //     emergencyContactId: 3,
-  //     name: '박민영',
-  //     relationship: '부모님',
-  //     phone: '010-5555-6666',
-  //   },
-  // ];
-
   return (
     <Container>
       <NavBar
@@ -95,7 +74,6 @@ export const ContactInfoPage = () => {
         right={<Exit onClick={handleGoBack} />}
       />
 
-      {/* {dummyEmergencyContacts.map((contact, index) => ( */}
       {contacts.map((contact, index) => (
         <ContactInfoCard
           key={contact.emergencyContactId}
