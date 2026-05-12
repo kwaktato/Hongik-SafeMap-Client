@@ -1,16 +1,18 @@
 import styled from 'styled-components';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import Up from '@/assets/icons/StatisticsUp.svg?react';
 import Down from '@/assets/icons/StatisticsDown.svg?react';
 import Calender from '@/assets/icons/CalenderXS.svg';
 import Reset from '@/assets/icons/ResetS.svg?react';
-// import Download from '@/assets/icons/DownloadS.svg?react';
+import Download from '@/assets/icons/DownloadS.svg?react';
 import { useAdminDisasterStatistics, useAdminDisasterType } from '@/api/admin';
 import { Button } from '@/components/common/Button';
 import { Dropdown } from '@/components/common/Dropdown';
 import { StatisticsGraph } from '@/components/admin/statistics/StatisticsGraph';
 import { StatisticsPieGraph } from '@/components/admin/statistics/StatisticsPieGraph';
 import type { DisasterStatisticsParams } from '@/types/Admin';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 interface StatisticsSectionProps {
   showStatistics: boolean;
@@ -21,6 +23,9 @@ export const StatisticsSection = ({
   showStatistics,
   onToggle,
 }: StatisticsSectionProps) => {
+  const statsRef = useRef<HTMLDivElement>(null);
+  const [isExporting, setIsExporting] = useState(false);
+
   const [selectedType, setSelectedType] = useState<string[]>(['전체']);
   const { data: disasters } = useAdminDisasterType();
   const disasterTypes = disasters?.map((t) => t.name) ?? [];
@@ -77,6 +82,45 @@ export const StatisticsSection = ({
     }));
   }, [statistics]);
 
+  const handleExportPDF = async () => {
+    if (!statsRef.current) return;
+
+    setIsExporting(true);
+
+    try {
+      const element = statsRef.current;
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      const originalPadding = element.style.padding;
+      element.style.padding = '40px';
+
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        ignoreElements: (el) => {
+          return el.tagName === 'BUTTON' || el.classList.contains('no-pdf');
+        },
+      });
+
+      element.style.padding = originalPadding;
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgWidth = 210;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      pdf.save(`재난통계_${new Date().toISOString().split('T')[0]}.pdf`);
+    } catch (error) {
+      console.error('PDF 생성 실패:', error);
+      alert('PDF 파일을 생성하는 도중 오류가 발생했습니다.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <StatisticsWrapper>
       <div className="top" onClick={onToggle}>
@@ -85,7 +129,7 @@ export const StatisticsSection = ({
       </div>
 
       {showStatistics && (
-        <Statistics>
+        <Statistics ref={statsRef}>
           <div className="top">
             <div className="filters">
               <div className="date">
@@ -136,9 +180,15 @@ export const StatisticsSection = ({
               </Button>
             </div>
 
-            {/* <Button variant="black" width="168px">
-              <Download /> pdf 내보내기
-            </Button> */}
+            <Button
+              variant="black"
+              width="168px"
+              disabled={isExporting}
+              onClick={handleExportPDF}
+            >
+              <Download />
+              <span>pdf 내보내기</span>
+            </Button>
           </div>
 
           <BoxWrapper>
@@ -254,6 +304,12 @@ const Statistics = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
+
+  .column24 {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
 
   .row16 {
     display: flex;
