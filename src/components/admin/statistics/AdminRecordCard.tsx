@@ -5,8 +5,9 @@ import ChevronDown from '@/assets/icons/ChevronDown.svg?react';
 import Calender from '@/assets/icons/CalenderXS.svg?react';
 // import Map from '@/assets/icons/MapS.svg?react';
 // import Play from '@/assets/icons/PlayS.svg?react';
-// import Information from '@/assets/icons/InformationS.svg?react';
-// import { Button } from '@/components/common/Button';
+import Information from '@/assets/icons/InformationS.svg?react';
+import { Button } from '@/components/common/Button';
+import { useAdminReportGroupDetail } from '@/api/admin';
 import { Tag, type TagColor } from '@/components/common/Tag';
 import { RecordGraph } from '@/components/admin/statistics/RecordGraph';
 import type { RiskLevel } from '@/types/common';
@@ -22,6 +23,8 @@ import {
   getOfficialAddress,
   type KakaoAddressResult,
 } from '@/utils/formatAddress';
+import { Modal } from '@/components/common/Modal';
+import { ModalReport } from '@/components/common/ModalReport';
 
 interface AdminRecordCardProps {
   record: DisasterRecord;
@@ -32,6 +35,9 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
   const [addressData, setAddressData] = useState<KakaoAddressResult | null>(
     null,
   );
+
+  const [showGroupReport, setShowGroupReport] = useState(false);
+  const { data: groupReport } = useAdminReportGroupDetail(record.id);
 
   const getTagVariant = (level?: RiskLevel) => {
     switch (level) {
@@ -145,20 +151,20 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
               </div>
             </div>
 
-            {/* <div className="rows">
-              <Button variant="white">
+            <div className="rows">
+              {/*<Button variant="white">
                 <Map />
                 지도에서 보기
               </Button>
               <Button variant="white">
                 <Play />
                 시뮬레이션
-              </Button>
-              <Button variant="white">
+              </Button>*/}
+              <Button variant="white" onClick={() => setShowGroupReport(true)}>
                 <Information />
                 상세 제보 확인하기
               </Button>
-            </div> */}
+            </div>
           </DetailWrapper>
         )}
       </RecordWrapper>
@@ -169,6 +175,14 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
         <div>상세보기</div>
         {showDetail ? <ChevronUp /> : <ChevronDown />}
       </ToggleWrapper>
+
+      <Modal isOpen={showGroupReport} onClose={() => setShowGroupReport(false)}>
+        <ModalReport
+          onClose={() => setShowGroupReport(false)}
+          addressData={addressData}
+          group={groupReport}
+        />
+      </Modal>
     </Container>
   );
 };
