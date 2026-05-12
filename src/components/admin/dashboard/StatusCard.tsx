@@ -99,7 +99,6 @@ const Container = styled.div<{ variant: CardVariant }>`
   padding: 20px;
   display: flex;
   flex-direction: column;
-  // justify-content: space-between;
   gap: 46px;
   background: ${({ theme }) => theme.colors.gray100};
   border-radius: 8px;

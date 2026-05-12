@@ -59,7 +59,6 @@ export const UserReportDetailPage = () => {
 };
 
 const Container = styled.div`
-  // margin: 56px 20px 0px 20px;
   margin-top: 64px;
 
   .title {

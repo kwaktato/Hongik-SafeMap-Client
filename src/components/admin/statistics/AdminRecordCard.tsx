@@ -118,10 +118,6 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
                   <span>
                     {formatDateTime(record.earliestReportTime)}
                     <br />~ {formatDateTime(record.latestReportTime)}
-                    {/* {formatDateDuration(
-                      record.earliestReportTime,
-                      record.latestReportTime,
-                    )} */}
                   </span>
                 </div>
                 <div className="detail">
@@ -142,12 +138,6 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
                   pending={record.pendingReportCount}
                   // suspicious={record.}
                 />
-                <div className="detail">
-                  {/* 검증된 제보<span>127건</span> */}
-                </div>
-                <div className="detail">
-                  {/* 검증 안된 제보<span>127건</span> */}
-                </div>
               </div>
             </div>
 
