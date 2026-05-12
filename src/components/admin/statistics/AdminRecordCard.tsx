@@ -3,12 +3,13 @@ import { useEffect, useState } from 'react';
 import ChevronUp from '@/assets/icons/ChevronUp.svg?react';
 import ChevronDown from '@/assets/icons/ChevronDown.svg?react';
 import Calender from '@/assets/icons/CalenderXS.svg?react';
-// import Map from '@/assets/icons/MapS.svg?react';
+import Map from '@/assets/icons/MapS.svg?react';
 import Play from '@/assets/icons/PlayS.svg?react';
 import Information from '@/assets/icons/InformationS.svg?react';
-import { useAdminReportGroupDetail } from '@/api/admin';
 import { Button } from '@/components/common/Button';
 import { Modal } from '@/components/common/Modal';
+import { ModalSimulation } from '@/components/admin/settings/Record/ModalSimulation';
+import { ModalLocation } from '@/components/admin/settings/Record/ModalLocation';
 import { ModalReport } from '@/components/admin/settings/Record/ModalReport';
 import { Tag, type TagColor } from '@/components/common/Tag';
 import { RecordGraph } from '@/components/admin/statistics/RecordGraph';
@@ -25,7 +26,6 @@ import {
   getOfficialAddress,
   type KakaoAddressResult,
 } from '@/utils/formatAddress';
-import { ModalSimulation } from '../settings/Record/ModalSimulation';
 
 interface AdminRecordCardProps {
   record: DisasterRecord;
@@ -37,10 +37,9 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
     null,
   );
 
-  const [showGroupReport, setShowGroupReport] = useState(false);
-  const { data: groupReport } = useAdminReportGroupDetail(record.id);
-
+  const [showLocation, setShowLocation] = useState(false);
   const [showSimulation, setShowSimulation] = useState(false);
+  const [showGroupReport, setShowGroupReport] = useState(false);
 
   const getTagVariant = (level?: RiskLevel) => {
     switch (level) {
@@ -147,17 +146,17 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
             </div>
 
             <div className="rows">
-              {/*<Button variant="white">
+              <Button variant="white" onClick={() => setShowLocation(true)}>
                 <Map />
                 지도에서 보기
-              </Button>*/}
+              </Button>
               <Button variant="white" onClick={() => setShowSimulation(true)}>
                 <Play />
                 시뮬레이션
               </Button>
               <Button variant="white" onClick={() => setShowGroupReport(true)}>
                 <Information />
-                상세 제보 확인하기
+                제보 상세보기
               </Button>
             </div>
           </DetailWrapper>
@@ -170,6 +169,15 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
         <div>상세보기</div>
         {showDetail ? <ChevronUp /> : <ChevronDown />}
       </ToggleWrapper>
+
+      <Modal isOpen={showLocation} onClose={() => setShowLocation(false)}>
+        <ModalLocation
+          onClose={() => setShowLocation(false)}
+          groupId={record.id}
+          disasterTitle={disasterTitle}
+          address={formatAddress(addressData, true)}
+        />
+      </Modal>
 
       <Modal isOpen={showSimulation} onClose={() => setShowSimulation(false)}>
         <ModalSimulation
@@ -186,8 +194,9 @@ export const AdminRecordCard = ({ record }: AdminRecordCardProps) => {
       <Modal isOpen={showGroupReport} onClose={() => setShowGroupReport(false)}>
         <ModalReport
           onClose={() => setShowGroupReport(false)}
+          disasterTitle={disasterTitle}
           addressData={addressData}
-          group={groupReport}
+          groupId={record.id}
         />
       </Modal>
     </Container>

@@ -81,7 +81,14 @@ export const formatRelativeTime = (dateString: string): string => {
 // ===================== 관리자 통계 및 아카이브 =====================
 /* YYYY년 MM월 */
 export const formatYearMonth = (isoStr: string) => {
+  if (!isoStr) return '';
+
   const date = new Date(isoStr);
+
+  if (isNaN(date.getTime())) {
+    console.error('Invalid Date Value:', isoStr);
+    return '';
+  }
 
   return new Intl.DateTimeFormat('ko-KR', {
     year: 'numeric',
