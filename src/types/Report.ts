@@ -39,7 +39,10 @@ export interface DisasterGroup {
   latestRiskLevel: RiskLevel;
 }
 
-/* 재난 제보 그룹 상세 조회: [get] /disaster-reports/grouped/${groupId} */
+/* 재난 제보 그룹 상세 조회
+[get] /disaster-reports/grouped/${groupId}
+[get] /admin/disaster-archive/disaster-records/${groupId}
+ */
 export interface DisasterGroupDetail extends Omit<DisasterGroup, 'id'> {
   groupId: number;
   isActive: boolean;
