@@ -40,8 +40,6 @@ export const ModalSimulation = ({
   const [map, setMap] = useState<kakao.maps.Map>();
   const [showCluster, setShowCluster] = useState(false);
 
-  if (!data) return null;
-
   const frames = data?.frames ?? [];
   const totalFrames = frames.length;
   const currentFrame = frames[currentIdx] ?? null;
