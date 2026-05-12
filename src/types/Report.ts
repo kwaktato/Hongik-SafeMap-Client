@@ -70,6 +70,7 @@ export interface ReportDetailResponse extends ReportBase {
   notInformativeProbability: number;
   informativePrediction: string;
   memberId: number;
+  groupTitle: string;
 }
 
 /* [get] /disaster-reports/{reportId}/evaluations */

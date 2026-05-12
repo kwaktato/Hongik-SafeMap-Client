@@ -47,7 +47,9 @@ export const Description = ({ report }: DescriptionProps) => {
   return (
     <TitleWrapper>
       <div className="text">
-        <div className="type">{report?.disasterType.name}</div>
+        <div className="type">
+          {report?.groupTitle ? report.groupTitle : report?.disasterType.name}
+        </div>
         <div className="description">{report?.disasterDescription}</div>
       </div>
 
