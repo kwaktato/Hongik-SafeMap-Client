@@ -20,6 +20,13 @@ import { useImgUpload } from '@/hooks/useImgUpload';
 export const UserReportPostPage = () => {
   const { handleGoBack, handleNavigate } = useHandleNavigate();
 
+  const [selectedDisaster, setSelectedDisaster] = useState('');
+  const [riskLevel, setRiskLevel] = useState('');
+  const [description, setDescription] = useState('');
+
+  const [isMapModalOpen, setIsMapModalOpen] = useState(false);
+  const { latitude, longitude, address, updateLocation } = useCurrentLocation();
+
   const { data: disasters } = useDisasterType();
   const disasterOptions = useMemo(() => {
     return (
@@ -32,19 +39,16 @@ export const UserReportPostPage = () => {
             {disaster.name}
           </Disaster>
         ),
-        value: String(disaster.id),
+        value: disaster.name,
       })) ?? []
     );
   }, [disasters]);
+  const selectedDisasterId = useMemo(() => {
+    const target = disasters?.find((d) => d.name === selectedDisaster);
+    return target?.id ?? null;
+  }, [disasters, selectedDisaster]);
 
   const riskLevelList: RiskLevel[] = ['긴급', '높음', '보통', '낮음'];
-
-  const [disasterTypeId, setDisasterTypeId] = useState('');
-  const [riskLevel, setRiskLevel] = useState('');
-  const [description, setDescription] = useState('');
-
-  const [isMapModalOpen, setIsMapModalOpen] = useState(false);
-  const { latitude, longitude, address, updateLocation } = useCurrentLocation();
 
   const [uploadedFiles, setUploadedFiles] = useState<MediaItem[]>([]);
   useEffect(() => {
@@ -62,11 +66,16 @@ export const UserReportPostPage = () => {
   const { mutate: createReport } = useCreateReportMutation();
   const { uploadMultipleImages } = useImgUpload();
   const handleButtonClick = async () => {
+    if (!selectedDisasterId) {
+      alert('재난 유형을 선택해주세요.');
+      return;
+    }
+
     const files = uploadedFiles.map((f) => f.file);
     const fileUrls = await uploadMultipleImages(files);
 
     const reportRequest: ReportRequest = {
-      disasterTypeId: Number(disasterTypeId),
+      disasterTypeId: selectedDisasterId,
       riskLevel: riskLevel as RiskLevel,
       disasterDescription: description,
       latitude: latitude,
@@ -89,7 +98,11 @@ export const UserReportPostPage = () => {
   };
 
   const isValid =
-    disasterTypeId && riskLevel && address.length > 0 && description.length > 0;
+    selectedDisaster &&
+    selectedDisasterId &&
+    riskLevel &&
+    address.length > 0 &&
+    description.length > 0;
 
   return (
     <Container>
@@ -103,8 +116,8 @@ export const UserReportPostPage = () => {
         <Dropdown
           title="재난 유형을 선택하세요"
           options={disasterOptions}
-          selectedOption={disasterTypeId}
-          setSelectedOption={setDisasterTypeId}
+          selectedOption={selectedDisaster}
+          setSelectedOption={setSelectedDisaster}
         />
       </div>
 

@@ -1,12 +1,18 @@
 import styled from 'styled-components';
+import { useEffect, useState } from 'react';
 import Count from '@/assets/icons/InformationXS.svg?react';
 import Time from '@/assets/icons/ClockXS.svg?react';
 import Chevron from '@/assets/icons/ChevronRight.svg?react';
 import { Tag, type TagColor } from '@/components/common/Tag';
+import { useHandleNavigate } from '@/hooks/useHandleNavigate';
 import type { DisasterGroupDetail } from '@/types/Report';
+import {
+  formatRecordTitle,
+  getOfficialAddress,
+  type KakaoAddressResult,
+} from '@/utils/formatAddress';
 import { formatDateTime, formatSimpleDate } from '@/utils/formatDate';
 import { formatTextTruncate } from '@/utils/formatText';
-import { useHandleNavigate } from '@/hooks/useHandleNavigate';
 
 interface BottomSheetReportProps {
   isOpen: boolean;
@@ -22,6 +28,28 @@ export const BottomSheetReport = ({
   if (!isOpen) return null;
 
   const { handleNavigate } = useHandleNavigate();
+
+  const [addressData, setAddressData] = useState<KakaoAddressResult | null>(
+    null,
+  );
+
+  useEffect(() => {
+    if (group.centerLatitude && group.centerLongitude) {
+      getOfficialAddress(group.centerLatitude, group.centerLongitude)
+        .then(setAddressData)
+        .catch(console.error);
+    }
+  }, [group]);
+
+  if (!addressData) return <div>주소 로딩 중...</div>;
+
+  const disasterTitle = group.title
+    ? group.title
+    : formatRecordTitle(
+        addressData,
+        group.latestRiskLevel,
+        group.disasterType.name,
+      );
 
   const tag = {
     긴급: {
@@ -49,7 +77,7 @@ export const BottomSheetReport = ({
       <SheetContainer onClick={(e) => e.stopPropagation()}>
         <TitleWrapper>
           <div className="top">
-            <div className="title">{group.disasterType.name}</div>
+            <div className="title">{disasterTitle}</div>
             <div className="right">
               <div>현재 위험도</div>
               <Tag variant={dangerousTag.variant}>{dangerousTag.text}</Tag>

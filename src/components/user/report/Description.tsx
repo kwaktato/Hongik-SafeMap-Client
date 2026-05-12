@@ -4,7 +4,7 @@ import Time from '@/assets/icons/ClockXS.svg?react';
 import { formatSimpleDate } from '@/utils/formatDate';
 import type { ReportDetailResponse } from '@/types/Report';
 import { Tag, type TagColor } from '@/components/common/Tag';
-import type { RiskLevel } from '@/types/common';
+import type { DisasterReportStatus, RiskLevel } from '@/types/common';
 
 interface DescriptionProps {
   report: ReportDetailResponse | undefined;
@@ -28,13 +28,28 @@ export const Description = ({ report }: DescriptionProps) => {
 
   const { variant, text } = getTagVariant(report?.riskLevel);
 
-  const isSuspicious =
-    report?.trustScore !== undefined && report.trustScore < 75;
+  const getStatusTag = (status: DisasterReportStatus, trustScore: number) => {
+    if (status === '블라인드') return null;
+
+    if (status === '승인' || status === '검증됨') {
+      return <Tag variant="blue">검증됨</Tag>;
+    }
+
+    if (status === 'AI 신뢰도 의심' || trustScore < 75) {
+      if (status !== '검토대기') {
+        return <Tag variant="red">AI 신뢰도 의심</Tag>;
+      }
+    }
+
+    return null;
+  };
 
   return (
     <TitleWrapper>
       <div className="text">
-        <div className="type">{report?.disasterType.name}</div>
+        <div className="type">
+          {report?.groupTitle ? report.groupTitle : report?.disasterType.name}
+        </div>
         <div className="description">{report?.disasterDescription}</div>
       </div>
 
@@ -44,16 +59,12 @@ export const Description = ({ report }: DescriptionProps) => {
           <Tag variant={variant}>{text}</Tag>
         </div>
 
-        {(isSuspicious || report?.status === 'AI 신뢰도 의심') && (
-          <div className="divider" />
-        )}
+        <div className="divider" />
 
-        {(isSuspicious || report?.status === 'AI 신뢰도 의심') && (
-          <div className="tags">
-            신뢰도
-            <Tag variant="red">의심</Tag>
-          </div>
-        )}
+        <div className="tags">
+          신뢰도
+          {getStatusTag(report?.status ?? '검토대기', report?.trustScore ?? 0)}
+        </div>
       </TagWrapper>
 
       <BoxWrapper>

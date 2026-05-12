@@ -33,9 +33,10 @@ export const UserHomePage = () => {
   const [activeTab, setActiveTab] = useState<string>('disasterType');
 
   const params: DisasterGroupParams = useMemo(() => {
+    console.log(mapCenter.lat, mapCenter.lng);
     return {
-      latitude,
-      longitude,
+      latitude: mapCenter.lat,
+      longitude: mapCenter.lng,
       disasterTypesId: filters.disasterType.includes('전체')
         ? undefined
         : disasterTypes
@@ -44,8 +45,9 @@ export const UserHomePage = () => {
       riskLevels: filters.riskLevel.includes('전체')
         ? undefined
         : (filters.riskLevel as RiskLevel[]),
+      isActive: false,
     };
-  }, [latitude, longitude, filters, disasterTypes]);
+  }, [mapCenter, filters, disasterTypes]);
 
   const { data: clusters } = useReportClusters(params);
   const { data: groupDetail } = useReportGroupDetail(selectedGroupId!);
@@ -270,6 +272,7 @@ export const UserHomePage = () => {
         initialValue={filters}
         defaultTab={activeTab}
         onApply={handleApplyFilter}
+        buttonBottom="56px"
       />
 
       {groupDetail && (
@@ -287,12 +290,18 @@ export const UserHomePage = () => {
 };
 
 const Container = styled.div`
-  padding: 56px 0px;
-  height: calc(100vh - 112px);
+  position: fixed;
+  top: 56px;
+  bottom: 56px;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  flex-direction: column;
 
   .map {
+    flex: 1;
     width: 100%;
-    height: 100%;
     position: relative;
   }
 `;
@@ -307,7 +316,7 @@ const MapOptions = styled.div`
   border-radius: 8px;
 
   position: absolute;
-  top: 72px;
+  top: 8px;
   left: 8px;
   z-index: 10;
 `;
@@ -331,13 +340,8 @@ const FilterWrapper = styled.div`
   padding: 12px 20px;
   display: flex;
   gap: 8px;
-
   background: ${({ theme }) => theme.colors.white};
-  position: absolute;
-  top: 54px;
-  left: 0;
-  right: 0;
-  z-index: 10;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.gray300};
 `;
 
 const Filter = styled.div<{ isSelected: boolean }>`
