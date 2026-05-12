@@ -10,6 +10,8 @@ import ModalClose from '@/assets/icons/Exit.svg?react';
 import Play from '@/assets/icons/PlayerButtonPlay.svg?react';
 import Pause from '@/assets/icons/PlayerButtonStop.svg?react';
 import Reset from '@/assets/icons/PlayerButtonReset.svg?react';
+import ZoomIn from '@/assets/icons/Upscale.svg?react';
+import ZoomOut from '@/assets/icons/Downscale.svg?react';
 import { useAdminReportSimulation } from '@/api/admin';
 import { CheckBox } from '@/components/common/CheckBox';
 import { Button } from '@/components/common/Button';
@@ -114,6 +116,7 @@ export const ModalSimulation = ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    color: '#ffffff',
   });
 
   const accumulatedMarkers = useMemo(() => {
@@ -136,6 +139,19 @@ export const ModalSimulation = ({
   }, [accumulatedMarkers, map]);
 
   const progress = totalFrames > 1 ? (currentIdx / (totalFrames - 1)) * 100 : 0;
+
+  const zoom = (isZoomIn: boolean) => {
+    if (!map) return;
+    console.log('줌 클릭됨', isZoomIn);
+    const currentLevel = map.getLevel();
+    const newLevel = isZoomIn ? currentLevel - 1 : currentLevel + 1;
+
+    if (newLevel < 1 || newLevel > 14) return;
+
+    map.setLevel(newLevel, { animate: true });
+  };
+
+  if (!data) return null;
 
   return (
     <ModalWrapper>
@@ -201,6 +217,15 @@ export const ModalSimulation = ({
               ))
             )}
           </Map>
+
+          <Zoom>
+            <div className="icon" onClick={() => zoom(true)}>
+              <ZoomIn />
+            </div>
+            <div className="icon" onClick={() => zoom(false)}>
+              <ZoomOut />
+            </div>
+          </Zoom>
         </MapWrapper>
 
         <SummaryWrapper>
@@ -411,6 +436,27 @@ const MapOptions = styled.div`
   top: 12px;
   left: 12px;
   z-index: 10;
+`;
+
+const Zoom = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 10;
+
+  .icon {
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: ${({ theme }) => theme.colors.white};
+    border: 1px solid ${({ theme }) => theme.colors.gray500};
+    border-radius: 8px;
+  }
 `;
 
 const MarkerContainer = styled.div<{ color: string; border: string }>`
