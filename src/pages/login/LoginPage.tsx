@@ -20,14 +20,27 @@ export const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [fcmToken, setFcmToken] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [retryTimer, setRetryTimer] = useState(0);
 
   const toggleShowPassword = () => {
     setShowPassword((prev) => !prev);
   };
 
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (retryTimer > 0) {
+      timer = setInterval(() => {
+        setRetryTimer((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [retryTimer]);
+
   const { mutate: login } = useGeneralLoginMutation();
 
   const handleLoginClick = () => {
+    if (retryTimer > 0) return;
+
     const loginRequest: GeneralLoginRequest = {
       email,
       password,
@@ -45,7 +58,12 @@ export const LoginPage = () => {
         setEmail('');
         setPassword('');
       },
-      onError: () => {
+      onError: (error: any) => {
+        if (error.response?.status === 429) {
+          alert('로그인 시도가 너무 많습니다. 5분 후에 다시 시도해주세요.');
+          setRetryTimer(300);
+          return;
+        }
         alert('로그인 실패! 이메일과 비밀번호를 확인해주세요.');
       },
     });
@@ -67,6 +85,9 @@ export const LoginPage = () => {
     getNotificationToken();
   }, []);
 
+  const isDisabled =
+    retryTimer > 0 || email.length === 0 || password.length === 0;
+
   return (
     <Container>
       <Logo />
@@ -86,7 +107,8 @@ export const LoginPage = () => {
           onClick={toggleShowPassword}
         />
         <Button
-          variant="gray"
+          variant={isDisabled ? 'gray' : 'red'}
+          disabled={isDisabled}
           style={{ marginTop: '16px' }}
           onClick={handleLoginClick}
         >
