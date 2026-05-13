@@ -8,11 +8,18 @@ import { TitleMainSub } from '@/components/common/TitleHeader';
 import { Modal } from '@/components/common/Modal';
 import { ModalButtons } from '@/components/common/ModalButtons';
 import { useHandleNavigate } from '@/hooks/useHandleNavigate';
+import { usePrivacyPolicy, useTerms } from '@/api/term';
+import { TermModal } from '@/components/user/mypage/TermModal';
 
 export const MyPage = () => {
   const { handleGoBack, handleNavigate } = useHandleNavigate();
 
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
+  const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
+  const { data: terms } = useTerms();
+  const { data: privacy } = usePrivacyPolicy();
 
   const { mutate: logout } = useLogoutMutation();
   const handleLogout = () => {
@@ -36,18 +43,17 @@ export const MyPage = () => {
         }
       />
 
-      {/* <MenuWrapper>
+      <MenuWrapper>
         <div className="title">이용약관</div>
-        <div className="menu" onClick={}>
+        <div className="menu" onClick={() => setIsTermsModalOpen(true)}>
           서비스 이용약관
         </div>
-        <div className="menu" onClick={}>
+        <div className="menu" onClick={() => setIsPrivacyModalOpen(true)}>
           개인정보처리 방침
         </div>
-      </MenuWrapper> 
+      </MenuWrapper>
 
       <Border />
-      */}
 
       <MenuWrapper>
         <div className="title">내 정보</div>
@@ -101,6 +107,28 @@ export const MyPage = () => {
           로그아웃
         </div>
       </MenuWrapper>
+
+      <Modal
+        isOpen={isTermsModalOpen}
+        onClose={() => setIsTermsModalOpen(false)}
+      >
+        <TermModal
+          onClose={() => setIsTermsModalOpen(false)}
+          type="이용약관"
+          term={terms}
+        />
+      </Modal>
+
+      <Modal
+        isOpen={isPrivacyModalOpen}
+        onClose={() => setIsPrivacyModalOpen(false)}
+      >
+        <TermModal
+          onClose={() => setIsPrivacyModalOpen(false)}
+          type="이용약관"
+          term={privacy}
+        />
+      </Modal>
 
       <Modal
         isOpen={isLogoutModalOpen}
