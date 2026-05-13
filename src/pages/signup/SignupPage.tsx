@@ -1,13 +1,15 @@
 import styled from 'styled-components';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Back from '@/assets/icons/ChevronLeft.svg?react';
 import Warning from '@/assets/icons/WarningXS.svg?react';
 import { useSignupMutation } from '@/api/auth';
+import { usePrivacyPolicy, useTerms } from '@/api/term';
 import { Button } from '@/components/common/Button';
 import { NavBar } from '@/components/common/NavBar';
 import { InputBox } from '@/components/common/InputBox';
 import { useHandleNavigate } from '@/hooks/useHandleNavigate';
 import type { SignupRequest } from '@/types/Auth';
+import { SignupTerms } from '@/components/user/SignupTerms';
 
 export const SignupPage = () => {
   const { handleGoBack, handleNavigate } = useHandleNavigate();
@@ -133,6 +135,29 @@ export const SignupPage = () => {
     });
   };
 
+  const [termsAgreed, setTermsAgreed] = useState(false);
+  const [privacyAgreed, setPrivacyAgreed] = useState(false);
+
+  const { data: terms } = useTerms();
+  const { data: privacy } = usePrivacyPolicy();
+
+  const isFormValid = useMemo(() => {
+    const hasValues = name && email && password && confirmPassword && phone;
+    const hasNoErrors = Object.values(errors).every((err) => err === '');
+    const hasAgreed = termsAgreed && privacyAgreed;
+
+    return hasValues && hasNoErrors && hasAgreed;
+  }, [
+    name,
+    email,
+    password,
+    confirmPassword,
+    phone,
+    errors,
+    termsAgreed,
+    privacyAgreed,
+  ]);
+
   return (
     <Container>
       <NavBar
@@ -225,8 +250,26 @@ export const SignupPage = () => {
         </Section>
       </Wrapper>
 
+      <div className="border" />
+
+      <TermsWrapper>
+        <SignupTerms
+          term={terms}
+          checked={termsAgreed}
+          onChange={() => setTermsAgreed(!termsAgreed)}
+        />
+        <SignupTerms
+          term={privacy}
+          checked={privacyAgreed}
+          onChange={() => setPrivacyAgreed(!privacyAgreed)}
+        />
+      </TermsWrapper>
       <Bottom>
-        <Button variant="red" onClick={handleSignupButtonClick}>
+        <Button
+          variant={isFormValid ? 'red' : 'gray'}
+          disabled={!isFormValid}
+          onClick={handleSignupButtonClick}
+        >
           회원가입
         </Button>
       </Bottom>
@@ -238,6 +281,12 @@ const Container = styled.div`
   margin: 56px 20px 100px 20px;
   display: flex;
   flex-direction: column;
+
+  .border {
+    margin: 20px -20px;
+    height: 1px;
+    background: ${({ theme }) => theme.colors.gray300};
+  }
 `;
 
 const NavLeft = styled(Back)`
@@ -265,6 +314,12 @@ const ErrorMessage = styled.div`
   color: ${({ theme }) => theme.colors.red600};
   font-size: ${({ theme }) => theme.font.fontSize.detail12};
   font-weight: ${({ theme }) => theme.font.fontWeight.medium};
+`;
+
+const TermsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 `;
 
 const Bottom = styled.div`
