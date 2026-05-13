@@ -15,7 +15,3 @@ export interface BasePageResponse {
 export interface ReportPageResponse<T> extends BasePageResponse {
   reports: T[];
 }
-
-export interface LogPageResponse<T> extends BasePageResponse {
-  logs: T[];
-}

@@ -1,6 +1,5 @@
 import type {
   BasePageResponse,
-  LogPageResponse,
   PageableRequest,
   ReportPageResponse,
 } from '@/types/Pageable';
@@ -184,4 +183,6 @@ export interface AdminLog {
 }
 
 /* [get] /admin/activity-logs */
-export type AdminLogsResponse = LogPageResponse<AdminLog>;
+export interface AdminLogsResponse extends BasePageResponse {
+  logs: AdminLog[];
+}
