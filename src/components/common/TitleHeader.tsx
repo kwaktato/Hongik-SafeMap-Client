@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import Logo from '@/assets/icons/LogoHome.svg?react';
 import My from '@/assets/icons/My.svg?react';
+import Notification from '@/assets/icons/Notification.svg?react';
 import { useHandleNavigate } from '@/hooks/useHandleNavigate';
 
 interface TitleMainSubProps {
@@ -57,7 +58,10 @@ export const TitleHeader = ({
   return (
     <TitleHeaderWrapper>
       {home ? <Logo /> : <TitleMainSub main={mainTitle} sub={subTitle} />}
-      <My onClick={() => handleNavigate('/user/my')} />
+      <div className="icons">
+        <Notification />
+        <My onClick={() => handleNavigate('/user/my')} />
+      </div>
     </TitleHeaderWrapper>
   );
 };
@@ -75,6 +79,11 @@ const TitleHeaderWrapper = styled.div`
   top: 0;
   left: 0;
   right: 0;
-
   z-index: 1;
+
+  .icons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
 `;
