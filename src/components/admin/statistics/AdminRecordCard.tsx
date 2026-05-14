@@ -6,7 +6,6 @@ import Calender from '@/assets/icons/CalenderXS.svg?react';
 import Map from '@/assets/icons/MapS.svg?react';
 import Play from '@/assets/icons/PlayS.svg?react';
 import Information from '@/assets/icons/InformationS.svg?react';
-import Save from '@/assets/icons/DownloadS.svg?react';
 import Edit from '@/assets/icons/WriteS.svg?react';
 import { Button } from '@/components/common/Button';
 import { Modal } from '@/components/common/Modal';
