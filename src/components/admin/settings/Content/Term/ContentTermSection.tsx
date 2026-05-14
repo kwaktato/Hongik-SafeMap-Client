@@ -1,12 +1,13 @@
 import styled from 'styled-components';
 import Delete from '@/assets/icons/TrashCan.svg?react';
-import type { TermItem } from '@/components/admin/settings/Content/Term/ContentTermModal';
+import type { TermSection } from '@/types/Term';
 
 interface ContentTermSectionProps {
-  term: TermItem;
+  term: TermSection;
   canDelete: boolean;
   onUpdate: (id: number, title: string, content: string) => void;
   onDelete: (id: number) => void;
+  autoFocus?: boolean;
 }
 
 export const ContentTermSection = ({
@@ -14,18 +15,20 @@ export const ContentTermSection = ({
   canDelete,
   onUpdate,
   onDelete,
+  autoFocus,
 }: ContentTermSectionProps) => {
   return (
     <ContentTermWrapper>
       <div className="top">
         <Title
-          value={term.title}
+          value={term.header}
           placeholder="조항 제목 (예: 제1조 목적)"
-          onChange={(e) => onUpdate(term.id, e.target.value, term.content)}
+          onChange={(e) => onUpdate(term.id ?? 0, e.target.value, term.content)}
+          autoFocus={autoFocus}
         />
 
         {canDelete && (
-          <div className="delete" onClick={() => onDelete(term.id)}>
+          <div className="delete" onClick={() => onDelete(term.id ?? 0)}>
             <Delete />
           </div>
         )}
@@ -34,7 +37,7 @@ export const ContentTermSection = ({
       <Content
         placeholder="조항 내용을 입력하세요."
         value={term.content}
-        onChange={(e) => onUpdate(term.id, term.title, e.target.value)}
+        onChange={(e) => onUpdate(term.id ?? 0, term.header, e.target.value)}
       />
     </ContentTermWrapper>
   );
@@ -67,18 +70,6 @@ const ContentTermWrapper = styled.div`
   svg {
     cursor: pointer;
     color: ${({ theme }) => theme.colors.red600};
-  }
-
-  .title {
-    color: ${({ theme }) => theme.colors.gray1000};
-    font-size: ${({ theme }) => theme.font.fontSize.body18};
-    font-weight: ${({ theme }) => theme.font.fontWeight.medium};
-  }
-
-  .content {
-    color: ${({ theme }) => theme.colors.gray700};
-    font-size: ${({ theme }) => theme.font.fontSize.body16};
-    font-weight: ${({ theme }) => theme.font.fontWeight.medium};
   }
 `;
 

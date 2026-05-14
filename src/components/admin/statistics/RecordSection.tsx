@@ -1,47 +1,66 @@
 import styled from 'styled-components';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Calender from '@/assets/icons/CalenderXS.svg';
 import Reset from '@/assets/icons/ResetS.svg?react';
 import { useAdminDisasterRecords, useAdminDisasterType } from '@/api/admin';
 import { AdminRecordCard } from '@/components/admin/statistics/AdminRecordCard';
 import { Dropdown } from '@/components/common/Dropdown';
 import { Button } from '@/components/common/Button';
+import { Pagination } from '@/components/common/Pagination';
 import type { RiskLevel } from '@/types/common';
 import type { DisasterRecordsParams } from '@/types/Admin';
 
 export const RecordSection = () => {
-  const [selectedRisk, setSelectedRisk] = useState<string[]>(['전체']);
-  const [selectedType, setSelectedType] = useState<string>('모든 유형');
-  const { data: disasters } = useAdminDisasterType();
-  const disasterTypes = disasters?.map((type) => type.name) ?? [];
+  const [currentPage, setCurrentPage] = useState(0);
 
+  const [selectedRisk, setSelectedRisk] = useState<string[]>(['전체']);
+  const [selectedType, setSelectedType] = useState<string[]>(['전체']);
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
 
+  const { data: disasters } = useAdminDisasterType();
+  const disasterTypes = disasters?.map((type) => type.name) ?? [];
+
+  const selectedTypeIds = useMemo(() => {
+    if (!disasters || selectedType.includes('모든 유형')) return undefined;
+
+    return disasters
+      .filter((d) => selectedType.includes(d.name))
+      .map((d) => d.id);
+  }, [disasters, selectedType]);
+
   const params: DisasterRecordsParams = useMemo(
     () => ({
-      page: 0,
-      size: 100,
+      page: currentPage,
+      size: 6,
+      disasterTypeIds: selectedTypeIds,
       riskLevels: selectedRisk.includes('전체')
         ? undefined
         : (selectedRisk as RiskLevel[]),
       from: startDate || undefined,
       to: endDate || undefined,
     }),
-    [selectedRisk, startDate, endDate],
+    [currentPage, selectedTypeIds, selectedRisk, startDate, endDate],
   );
 
   const { data: records } = useAdminDisasterRecords(params);
 
-  const filteredRecords = useMemo(() => {
-    if (!records?.disasterRecords) return [];
+  const handleResetClick = () => {
+    setStartDate('');
+    setEndDate('');
+    setSelectedRisk(['전체']);
+    setSelectedType(['모든 유형']);
+    setCurrentPage(0);
+  };
 
-    if (selectedType === '모든 유형') return records.disasterRecords;
+  const handlePageChange = (page: number) => {
+    if (isNaN(page)) return;
+    setCurrentPage(page);
+  };
 
-    return records.disasterRecords.filter(
-      (record) => record.disasterType.name === selectedType,
-    );
-  }, [records, selectedType]);
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [selectedRisk, selectedType, startDate, endDate]);
 
   return (
     <RecordWrapper>
@@ -77,10 +96,11 @@ export const RecordSection = () => {
 
         <Dropdown
           title="모든 유형"
-          options={['모든 유형', ...disasterTypes]}
+          options={['전체', ...disasterTypes]}
           selectedOption={selectedType}
           setSelectedOption={setSelectedType}
           style={{ width: '160px' }}
+          isMulti={true}
         />
 
         <Dropdown
@@ -96,12 +116,7 @@ export const RecordSection = () => {
           variant="white"
           width="100px"
           height="46px"
-          onClick={() => {
-            setStartDate('');
-            setEndDate('');
-            setSelectedRisk(['전체']);
-            setSelectedType('모든 유형');
-          }}
+          onClick={handleResetClick}
         >
           <Reset />
           <span>초기화</span>
@@ -109,10 +124,20 @@ export const RecordSection = () => {
       </div>
 
       <div className="records">
-        {filteredRecords.map((record) => (
+        {records?.disasterRecords.map((record) => (
           <AdminRecordCard record={record} />
         ))}
       </div>
+
+      {records && records.totalPages > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={records.totalPages}
+          onPageChange={handlePageChange}
+          isFirst={records.first}
+          isLast={records.last}
+        />
+      )}
     </RecordWrapper>
   );
 };

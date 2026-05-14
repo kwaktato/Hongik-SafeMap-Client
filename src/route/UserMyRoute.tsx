@@ -5,6 +5,8 @@ import { PasswordChangePage } from '@/pages/user/MyPage/PasswordChangePage';
 import { MedicalInfoPage } from '@/pages/user/MyPage/MedicalInfoPage';
 import { ContactInfoPage } from '@/pages/user/MyPage/ContactInfoPage';
 import { MyReportPage } from '@/pages/user/MyPage/MyReportPage';
+import { MyResourcePostPage } from '@/pages/user/MyPage/MyResourcePostPage';
+import { MyMissingPostPage } from '@/pages/user/MyPage/MyMissingPostPage';
 
 export const UserMyRoute = () => {
   return (
@@ -16,6 +18,9 @@ export const UserMyRoute = () => {
         <Route path="medical" element={<MedicalInfoPage />} />
         <Route path="contact" element={<ContactInfoPage />} />
         <Route path="report" element={<MyReportPage />} />
+        <Route path="report" element={<MyReportPage />} />
+        <Route path="resource" element={<MyResourcePostPage />} />
+        <Route path="missing" element={<MyMissingPostPage />} />
       </Routes>
       <Outlet />
     </div>

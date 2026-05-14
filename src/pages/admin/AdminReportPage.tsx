@@ -1,13 +1,16 @@
 import styled from 'styled-components';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAdminReports } from '@/api/admin';
 import { AdminReportCard } from '@/components/admin/reports/AdminReportCard';
 import { SearchBar } from '@/components/common/SearchBar';
 import { Dropdown } from '@/components/common/Dropdown';
+import { Pagination } from '@/components/common/Pagination';
 import type { AdminReportParams } from '@/types/Admin';
 import type { DisasterReportStatus } from '@/types/common';
 
 export const AdminReportPage = () => {
+  const [currentPage, setCurrentPage] = useState(0);
+
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<string[]>(['전체 제보']);
 
@@ -22,11 +25,11 @@ export const AdminReportPage = () => {
 
   const params: AdminReportParams = useMemo(
     () => ({
-      page: 0,
-      size: 100,
+      page: currentPage,
+      size: 6,
       statuses: getStatusParams(selectedStatus),
     }),
-    [selectedStatus],
+    [selectedStatus, currentPage],
   );
   const { data } = useAdminReports(params);
 
@@ -45,6 +48,15 @@ export const AdminReportPage = () => {
     return reports;
   }, [searchTerm, selectedStatus, data]);
 
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [selectedStatus, searchTerm]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo(0, 100);
+  };
+
   return (
     <Container>
       <div className="top">
@@ -53,7 +65,7 @@ export const AdminReportPage = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           onClear={() => setSearchTerm('')}
-          onSearch={() => {}}
+          onSearch={() => setCurrentPage(0)}
           width="560px"
         />
 
@@ -79,6 +91,16 @@ export const AdminReportPage = () => {
           <AdminReportCard report={report} />
         ))}
       </div>
+
+      {data && data.totalPages > 0 && (
+        <Pagination
+          currentPage={data.currentPage}
+          totalPages={data.totalPages}
+          onPageChange={handlePageChange}
+          isFirst={data.first}
+          isLast={data.last}
+        />
+      )}
     </Container>
   );
 };

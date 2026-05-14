@@ -2,13 +2,13 @@ import styled from 'styled-components';
 import { useState } from 'react';
 import { NavBar } from '@/components/common/NavBar';
 import Exit from '@/assets/icons/Exit.svg?react';
-import { useGetMyReports } from '@/api/mypage';
-import { UserReportCard } from '@/components/user/mypage/UserReportCard';
+import { useGetMyResourceReports } from '@/api/mypage';
+import { PostCard } from '@/components/user/board/PostCard';
 import { Pagination } from '@/components/common/Pagination';
 import { useHandleNavigate } from '@/hooks/useHandleNavigate';
 import type { PageableRequest } from '@/types/Pageable';
 
-export const MyReportPage = () => {
+export const MyResourcePostPage = () => {
   const { handleGoBack } = useHandleNavigate();
 
   const [currentPage, setCurrentPage] = useState(0);
@@ -18,7 +18,7 @@ export const MyReportPage = () => {
     size: 5,
   };
 
-  const { data: report } = useGetMyReports(pageable);
+  const { data } = useGetMyResourceReports(pageable);
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
@@ -28,23 +28,25 @@ export const MyReportPage = () => {
   return (
     <Container>
       <NavBar
-        center={<NavCenter>내 제보</NavCenter>}
+        center={<NavCenter>내 자원 게시글</NavCenter>}
         right={<Exit onClick={handleGoBack} />}
       />
 
-      <div className="count">총 {report?.totalElements ?? 0}개의 제보</div>
+      <div className="count">총 {data?.totalElements ?? 0}개의 게시글</div>
 
-      {report?.reports.map((report) => (
-        <UserReportCard key={report.id} report={report} />
-      ))}
+      <PostWrapper>
+        {data?.reports.map((post) => (
+          <PostCard key={post.id} post={post} />
+        ))}
+      </PostWrapper>
 
-      {report && report.totalPages > 1 && (
+      {data && data.totalPages > 1 && (
         <Pagination
-          currentPage={report.currentPage}
-          totalPages={report.totalPages}
+          currentPage={data.currentPage}
+          totalPages={data.totalPages}
           onPageChange={handlePageChange}
-          isFirst={report.first}
-          isLast={report.last}
+          isFirst={data.first}
+          isLast={data.last}
         />
       )}
     </Container>
@@ -74,4 +76,19 @@ const NavCenter = styled.div`
   color: ${({ theme }) => theme.colors.gray1000};
   font-size: ${({ theme }) => theme.font.fontSize.title20};
   font-weight: ${({ theme }) => theme.font.fontWeight.bold};
+`;
+
+const PostWrapper = styled.div`
+  display: grid;
+  gap: 8px;
+
+  grid-template-columns: repeat(1, 1fr);
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
 `;

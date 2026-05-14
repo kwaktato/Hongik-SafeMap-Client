@@ -1,65 +1,146 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ModalClose from '@/assets/icons/Exit.svg?react';
 import Plus from '@/assets/icons/PlusS.svg?react';
+import {
+  useCreatePrivacyPolicy,
+  useCreateTerms,
+  useUpdatePrivacyPolicy,
+  useUpdateTerms,
+} from '@/api/term';
 import { Button } from '@/components/common/Button';
 import { ContentTermSection } from '@/components/admin/settings/Content/Term/ContentTermSection';
-
-export interface TermItem {
-  id: number;
-  title: string;
-  content: string;
-}
+import { InputBox } from '@/components/common/InputBox';
+import type { Term } from '@/types/Term';
 
 interface ContentTermModalProps {
   onClose: () => void;
-  title: string;
-  initialTerms: TermItem[];
-  onSave: (terms: TermItem[]) => void;
+  type: string;
+  initialTerms: Term | undefined;
 }
 
 export const ContentTermModal = ({
   onClose,
-  title,
+  type,
   initialTerms,
-  onSave,
 }: ContentTermModalProps) => {
-  const [terms, setTerms] = useState<TermItem[]>(initialTerms);
+  const [title, setTitle] = useState('');
+  const [version, setVersion] = useState('');
+  const [sections, setSections] = useState([
+    { id: 0, header: '', content: '' },
+  ]);
 
-  const handleUpdate = (id: number, newTitle: string, newContent: string) => {
-    setTerms((prev) =>
-      prev.map((t) =>
-        t.id === id ? { ...t, title: newTitle, content: newContent } : t,
-      ),
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (initialTerms) {
+      setTitle(initialTerms.title);
+      setVersion(initialTerms.version);
+      setSections(
+        initialTerms.sections.map((section, index) => ({
+          id: index,
+          header: section.header,
+          content: section.content,
+        })),
+      );
+    } else {
+      setTitle('');
+      setVersion('0.0');
+      setSections([{ id: 0, header: '', content: '' }]);
+    }
+  }, [initialTerms]);
+
+  const { mutate: createTerms } = useCreateTerms();
+  const { mutate: updateTerms } = useUpdateTerms();
+
+  const { mutate: createPrivacy } = useCreatePrivacyPolicy();
+  const { mutate: updatePrivacy } = useUpdatePrivacyPolicy();
+
+  const handleUpdate = (id: number, header: string, content: string) => {
+    setSections((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, header, content } : t)),
     );
   };
 
   const handleDelete = (id: number) => {
-    if (terms.length <= 1) return;
-    setTerms((prev) => prev.filter((t) => t.id !== id));
+    if (sections.length <= 1) return;
+    setSections((prev) => prev.filter((t) => t.id !== id));
   };
 
   const handleAdd = () => {
     const newId =
-      terms.length > 0 ? Math.max(...terms.map((t) => t.id)) + 1 : 1;
-    setTerms([...terms, { id: newId, title: '', content: '' }]);
+      sections.length > 0 ? Math.max(...sections.map((t) => t.id)) + 1 : 0;
+    setSections([...sections, { id: newId, header: '', content: '' }]);
+
+    setTimeout(() => {
+      if (scrollRef.current) {
+        scrollRef.current.scrollTo({
+          top: scrollRef.current.scrollHeight,
+          behavior: 'smooth',
+        });
+      }
+    }, 0);
+  };
+
+  const handleSave = () => {
+    if (Number(version) < Number(initialTerms?.version))
+      return alert('현재 버전보다 큰 숫자를 입력해주세요.');
+
+    const request: Term = {
+      version,
+      title,
+      date: new Date().toISOString().split('T')[0],
+      sections: sections.map(({ header, content }) => ({ header, content })),
+    };
+
+    if (type === '이용약관') {
+      if (version !== initialTerms?.version) {
+        createTerms(request, { onSuccess: onClose });
+      } else {
+        updateTerms(request, { onSuccess: onClose });
+      }
+    } else {
+      if (version !== initialTerms?.version) {
+        createPrivacy(request, { onSuccess: onClose });
+      } else {
+        updatePrivacy(request, { onSuccess: onClose });
+      }
+    }
   };
 
   return (
     <ModalWrapper>
       <div className="top">
-        <div>{title}</div>
+        <div>{type} 조항 편집</div>
         <ModalClose onClick={onClose} />
       </div>
 
-      <div className="terms">
-        {terms.map((term) => (
+      <div className="inputs">
+        <InputBox
+          title="제목"
+          placeholder="제목을 입력하세요"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <InputBox
+          title="버전"
+          placeholder="버전을 입력하세요(예: 1.0)"
+          value={version}
+          onChange={(e) => setVersion(e.target.value)}
+        />
+      </div>
+
+      <div className="terms" ref={scrollRef}>
+        {sections?.map((section, index) => (
           <ContentTermSection
-            key={term.id}
-            term={term}
-            canDelete={terms?.length > 1}
-            onUpdate={handleUpdate}
-            onDelete={handleDelete}
+            key={section.id}
+            term={section}
+            canDelete={sections.length > 1}
+            onUpdate={(id, header, content) =>
+              handleUpdate(id, header, content)
+            }
+            onDelete={() => handleDelete(section.id)}
+            autoFocus={index === sections.length - 1 && section.header === ''}
           />
         ))}
       </div>
@@ -69,11 +150,7 @@ export const ContentTermModal = ({
         <span>새로운 조항 추가</span>
       </Button>
 
-      <Button
-        variant="red"
-        style={{ flexShrink: '0' }}
-        onClick={() => onSave(terms)}
-      >
+      <Button variant="red" style={{ flexShrink: '0' }} onClick={handleSave}>
         저장
       </Button>
     </ModalWrapper>
@@ -98,6 +175,16 @@ const ModalWrapper = styled.div`
     color: ${({ theme }) => theme.colors.gray1000};
     font-size: ${({ theme }) => theme.font.fontSize.title24};
     font-weight: ${({ theme }) => theme.font.fontWeight.bold};
+  }
+
+  .inputs {
+    width: 100%;
+    display: flex;
+    gap: 16px;
+
+    & > div {
+      flex: 1;
+    }
   }
 
   svg {

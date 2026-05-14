@@ -1,6 +1,5 @@
 import type {
   BasePageResponse,
-  LogPageResponse,
   PageableRequest,
   ReportPageResponse,
 } from '@/types/Pageable';
@@ -68,6 +67,7 @@ export interface DisasterRecord extends DisasterGroup {
 }
 
 export interface DisasterRecordsParams extends PageableRequest {
+  disasterTypeIds?: number[];
   riskLevels?: RiskLevel[];
   from?: string;
   to?: string;
@@ -184,4 +184,6 @@ export interface AdminLog {
 }
 
 /* [get] /admin/activity-logs */
-export type AdminLogsResponse = LogPageResponse<AdminLog>;
+export interface AdminLogsResponse extends BasePageResponse {
+  logs: AdminLog[];
+}
