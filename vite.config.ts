@@ -10,7 +10,7 @@ export default defineConfig({
     react(),
     svgr(),
     VitePWA({
-      strategies: 'injectManifest',
+      // strategies: 'injectManifest',
       srcDir: 'public',
       filename: 'firebase-messaging-sw.js',
       registerType: 'autoUpdate',
