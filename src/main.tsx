@@ -11,6 +11,7 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import { MaintenanceProvider } from '@/contexts/MaintenanceContext';
+import { MapProvider } from '@/contexts/MapContext';
 import '@/firebase';
 
 const queryClient = new QueryClient({
@@ -30,12 +31,14 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <MaintenanceProvider>
-        <ThemeProvider theme={theme}>
-          <GlobalStyle />
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
-        </ThemeProvider>
+        <MapProvider>
+          <ThemeProvider theme={theme}>
+            <GlobalStyle />
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </ThemeProvider>
+        </MapProvider>
       </MaintenanceProvider>
     </QueryClientProvider>
   </StrictMode>,
