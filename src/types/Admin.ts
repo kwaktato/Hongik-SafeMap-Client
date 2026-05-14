@@ -67,6 +67,7 @@ export interface DisasterRecord extends DisasterGroup {
 }
 
 export interface DisasterRecordsParams extends PageableRequest {
+  disasterTypeIds?: number[];
   riskLevels?: RiskLevel[];
   from?: string;
   to?: string;

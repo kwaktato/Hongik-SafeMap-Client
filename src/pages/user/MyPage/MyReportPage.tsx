@@ -1,20 +1,29 @@
 import styled from 'styled-components';
+import { useState } from 'react';
 import { NavBar } from '@/components/common/NavBar';
 import Exit from '@/assets/icons/Exit.svg?react';
 import { useGetMyReports } from '@/api/mypage';
 import { UserReportCard } from '@/components/user/mypage/UserReportCard';
+import { Pagination } from '@/components/common/Pagination';
 import { useHandleNavigate } from '@/hooks/useHandleNavigate';
 import type { PageableRequest } from '@/types/Pageable';
 
 export const MyReportPage = () => {
   const { handleGoBack } = useHandleNavigate();
 
+  const [currentPage, setCurrentPage] = useState(0);
+
   const pageable: PageableRequest = {
-    page: 0,
-    size: 100,
+    page: currentPage,
+    size: 5,
   };
 
   const { data: report } = useGetMyReports(pageable);
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    window.scrollTo(0, 0);
+  };
 
   return (
     <Container>
@@ -28,6 +37,16 @@ export const MyReportPage = () => {
       {report?.reports.map((report) => (
         <UserReportCard key={report.id} report={report} />
       ))}
+
+      {report && report.totalPages > 1 && (
+        <Pagination
+          currentPage={report.currentPage}
+          totalPages={report.totalPages}
+          onPageChange={handlePageChange}
+          isFirst={report.first}
+          isLast={report.last}
+        />
+      )}
     </Container>
   );
 };
@@ -44,6 +63,10 @@ const Container = styled.div`
     color: ${({ theme }) => theme.colors.gray700};
     font-size: ${({ theme }) => theme.font.fontSize.body14};
     font-weight: ${({ theme }) => theme.font.fontWeight.medium};
+  }
+
+  .pagination {
+    padding: 12px 0px;
   }
 `;
 

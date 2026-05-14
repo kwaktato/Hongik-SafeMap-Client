@@ -2,35 +2,56 @@ import styled from 'styled-components';
 import { useState } from 'react';
 import { useAdminActivityLogs } from '@/api/admin';
 import { Button } from '@/components/common/Button';
+import { Pagination } from '@/components/common/Pagination';
 import type { PageableRequest } from '@/types/Pageable';
 import { formatDashDate } from '@/utils/formatDate';
 
 export const AccountLog = () => {
+  const [showAll, setShowAll] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+
   const pageable: PageableRequest = {
-    page: 0,
-    size: 100,
+    page: currentPage,
+    size: showAll ? 10 : 3,
   };
 
   const { data } = useAdminActivityLogs(pageable);
 
-  const [showAll, setShowAll] = useState(false);
-
-  const logs = showAll ? data?.logs : data?.logs.slice(0, 3);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   return (
     <Container>
-      {logs?.slice(0, 3).map((log, index) => (
-        <div key={log.id}>
-          <Section>
-            <div className="description">{log.description}</div>
-            <div className="date">{formatDashDate(log.createdAt, true)}</div>
-          </Section>
+      {data &&
+        data.logs.map((log, index) => (
+          <div key={log.id}>
+            <Section>
+              <div className="description">{log.description}</div>
+              <div className="date">{formatDashDate(log.createdAt, true)}</div>
+            </Section>
 
-          {index !== logs.length - 1 && <Border />}
-        </div>
-      ))}
+            {index !== data.logs.length - 1 && <Border />}
+          </div>
+        ))}
 
-      <Button variant="black" onClick={() => setShowAll((prev) => !prev)}>
+      {showAll && data && (
+        <Pagination
+          currentPage={data.currentPage}
+          totalPages={data.totalPages}
+          onPageChange={handlePageChange}
+          isFirst={data.first}
+          isLast={data.last}
+        />
+      )}
+
+      <Button
+        variant="black"
+        onClick={() => {
+          setShowAll((prev) => !prev);
+          setCurrentPage(0);
+        }}
+      >
         {showAll ? '접기' : '전체 로그 보기'}
       </Button>
     </Container>
