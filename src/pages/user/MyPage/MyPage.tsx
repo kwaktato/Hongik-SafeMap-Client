@@ -94,7 +94,19 @@ export const MyPage = () => {
       <MenuWrapper>
         <div className="title">내 제보</div>
         <div className="menu" onClick={() => handleNavigate('/user/my/report')}>
-          내가 제보한 글
+          내 제보글
+        </div>
+        <div
+          className="menu"
+          onClick={() => handleNavigate('/user/my/resource')}
+        >
+          내 자원 게시글
+        </div>
+        <div
+          className="menu"
+          onClick={() => handleNavigate('/user/my/missing')}
+        >
+          내 실종 게시글
         </div>
       </MenuWrapper>
 
